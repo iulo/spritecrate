@@ -82,6 +82,11 @@ const core = packPixels({ sprites: [{ id: 'x', width: 1, height: 1, pixels: new 
 if (core.pages.length !== 1) throw new Error('core consumer failed');
 const result = await pack({ inputs: ['assets/*.png'], format: 'phaser4' });
 await writeOutput(result.files, { directory: 'sdk-output' });
+for (const format of ['pixijs', 'cocos2d'] as const) {
+  const output = await pack({ inputs: ['assets/*.png'], format });
+  const suffix = format === 'cocos2d' ? '.plist' : '.json';
+  if (!output.files.some(file => file.name.endsWith(suffix))) throw new Error(format + ' consumer output missing');
+}
 `,
   );
   await writeFile(
@@ -102,6 +107,29 @@ await writeOutput(result.files, { directory: 'sdk-output' });
   run(['exec', 'spritetunk', 'pack', 'assets/*.png', '--out-dir', 'cli-output', '--json']);
   const json = JSON.parse(await readFile(path.join(temporary, 'cli-output', 'atlas.json'), 'utf8'));
   if (!json.frames['assets/a.png']) throw new Error('CLI consumer output is missing the frame');
+  for (const format of ['pixijs', 'cocos2d']) {
+    const directory = `cli-${format}`;
+    run([
+      'exec',
+      'spritetunk',
+      'pack',
+      'assets/*.png',
+      '--format',
+      format,
+      '--out-dir',
+      directory,
+      '--json',
+    ]);
+    const suffix = format === 'cocos2d' ? '.plist' : '.json';
+    const descriptor = await readFile(path.join(temporary, directory, 'atlas' + suffix), 'utf8');
+    if (
+      format === 'pixijs'
+        ? !JSON.parse(descriptor).frames['assets/a.png']
+        : !descriptor.includes('<key>assets/a.png</key>')
+    ) {
+      throw new Error(format + ' CLI consumer output is missing the frame');
+    }
+  }
   console.log(
     `${useRegistry ? 'Public npm registry' : 'Installed tarballs'}: SDK runtime, TypeScript declarations and CLI bin passed.`,
   );
