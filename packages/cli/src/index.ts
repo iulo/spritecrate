@@ -12,7 +12,7 @@ Usage: spritetunk pack [glob ...] [options]
   --config <file>   JSON configuration (paths relative to this file)
   --out-dir <dir>   Output directory (default: dist/atlas)
   --name <name>     Atlas basename (default: atlas)
-  --format <name>   json-hash | json-array | phaser3
+  --format <name>   json-hash | json-array | phaser4 | phaser3
   --dry-run        Validate and pack without writing files
   --json           Emit one JSON result to stdout
   --help           Show help
@@ -55,7 +55,7 @@ async function main(): Promise<void> {
   const cliInputs = positionals.slice(1);
   const inputs = cliInputs.length ? cliInputs : (config.inputs ?? []);
   const format = values.format ?? config.format ?? 'json-hash';
-  if (!['json-hash', 'json-array', 'phaser3'].includes(String(format)))
+  if (!['json-hash', 'json-array', 'phaser4', 'phaser3'].includes(String(format)))
     throw new AtlasError('INVALID_OPTIONS', `Unknown format: ${String(format)}`);
   const atlas = {
     ...config.atlas,

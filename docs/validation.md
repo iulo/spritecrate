@@ -22,17 +22,22 @@
 
 ## CI
 
+- GitHub Actions 的 Linux/macOS/Windows × Node 22.22.2/24.15.0/26 已全部通过，另有 Phaser 浏览器验证。见 [CI](https://github.com/iulo/spritetunk/actions/runs/44269183130)。
+- 三包 0.1.1 已通过 GitHub OIDC 发布，公共安装也已通过；见 [Release](https://github.com/iulo/spritetunk/actions/runs/44271944279)。
+
 首次 Windows 检查因 CRLF 失败，已通过 .gitattributes 修复；第二轮全部通过。
 
 ## 尚未覆盖
 
-- GitHub Actions 的 Linux/macOS/Windows × Node 22.22.2/24.15.0/26 已全部通过，另有 Phaser 浏览器验证。见 [CI](https://github.com/iulo/spritetunk/actions/runs/44269183130)。
 - 原生 Sharp 跨平台编码的 PNG 字节一致性不作保证。
 - 文件系统中断、断电、恶意并发替换和回滚本身失败等故障未全部注入测试；writeOutput 不提供多文件事务保证。
 - 尚未进行上游全功能差异测试、超大素材压力测试和真实业务素材基准。
-- 三包 0.1.0 已发布，三项 Trusted Publishing 已配置；CI 的实际写入尚未验证。
 - 没有 GUI 或 YYRT 设备验证；这是开发工具，不宣称游戏运行时兼容性。
 
 ## 阶段结果
 
-M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M3 功能已实现，Phaser 旋转限制按实测收敛。M4 的本机包质量、示例和跨平台 CI 已完成。npm 三包已发布；可信发布仍需实际写入验证。
+M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M3 功能已实现，Phaser 旋转限制按实测收敛。M4 的本机包质量、示例和跨平台 CI 已完成。npm 三包已发布，可信发布已验证。
+
+## Phaser 4 验证
+
+已验证 Phaser 4.2.1 和 3.90.0：单页、多页、裁边偏移、逐像素还原。4.2.1 的旋转探针出现 30 个不符像素，因此 phaser4 导出也禁止旋转。正式示例、SDK/CLI 文档与默认测试引擎已改为 Phaser 4。

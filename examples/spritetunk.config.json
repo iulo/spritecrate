@@ -2,6 +2,6 @@
   "$schema": "../packages/cli/config.schema.json",
   "inputs": ["assets/*.png"],
   "outDir": "output",
-  "format": "phaser3",
+  "format": "phaser4",
   "atlas": { "name": "atlas", "maxWidth": 2048, "maxHeight": 2048 }
 }

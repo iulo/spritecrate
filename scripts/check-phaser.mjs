@@ -4,8 +4,8 @@ import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 import assert from 'node:assert/strict';
 import { pack } from '@spritetunk/node';
+import { exportAtlas } from '@spritetunk/core';
 
-// Self-generated asymmetric fixtures, including a transparent border on b.
 const images = [];
 for (const [id, color, width, height, offset] of [
   ['a', 40, 6, 3, 0],
@@ -25,94 +25,126 @@ for (const [id, color, width, height, offset] of [
     expected: [...data],
   });
 }
-const packed = await pack({
-  inputs: images,
-  atlas: { name: 'test', maxWidth: 6, maxHeight: 3, rotate: false, extrude: 0, padding: 0 },
-  format: 'phaser3',
-});
-assert.equal(packed.report.pageCount, 2);
-const files = new Map(packed.files.map((file) => [`/${file.name}`, file.data]));
-files.set(
-  '/phaser.js',
-  await readFile(new URL('../node_modules/phaser/dist/phaser.js', import.meta.url)),
-);
-files.set(
-  '/',
-  Buffer.from(`<!doctype html><meta charset="utf-8"><script src="/phaser.js"></script><script>
-window.testResult = null;
-new Phaser.Game({ type: Phaser.WEBGL, width: 64, height: 64, transparent: true, antialias: false, pixelArt: true, banner: false,
- scene: {
-  preload() { this.load.multiatlas('test', '/test.json', '/'); },
-  create() {
-   const texture = this.textures.get('test');
-   const frames = ['a', 'b'].map(id => { const f = texture.get(id); return { name: id, width: f.realWidth, height: f.realHeight, rotated: f.rotated, source: f.sourceIndex }; });
-   this.add.image(0, 0, 'test', 'a').setOrigin(0);
-   this.add.image(6, 0, 'test', 'b').setOrigin(0);
-   this.time.delayedCall(100, () => this.game.renderer.snapshot(image => {
-    const canvas = document.createElement('canvas'); canvas.width = 14; canvas.height = 5;
-    const context = canvas.getContext('2d'); context.drawImage(image, 0, 0);
-    window.testResult = { frames, pixels: Array.from(context.getImageData(0, 0, 14, 5).data) };
-   }));
-  }
- }
-});</script>`),
-);
-const server = createServer((req, res) => {
-  const pathname = new URL(req.url, 'http://localhost').pathname;
-  const data = files.get(pathname);
-  if (!data) {
-    res.writeHead(404);
-    res.end();
-    return;
-  }
-  res.setHeader(
-    'Content-Type',
-    pathname.endsWith('.png')
-      ? 'image/png'
-      : pathname.endsWith('.json')
-        ? 'application/json'
-        : pathname.endsWith('.js')
-          ? 'text/javascript'
-          : 'text/html',
-  );
-  res.end(data);
-});
-await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-let browser;
+const browser = await chromium.launch({ headless: true, channel: 'chromium' });
 try {
-  browser = await chromium.launch({ headless: true, channel: 'chromium' });
-  const page = await browser.newPage();
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`http://127.0.0.1:${server.address().port}/`);
-  await page.waitForFunction(() => window.testResult !== null, undefined, { timeout: 30000 });
-  const result = await page.evaluate(() => window.testResult);
-  assert.deepEqual(errors, []);
-  assert.deepEqual(
-    result.frames.map((frame) => [frame.width, frame.height, frame.rotated]),
-    [
-      [6, 3, false],
-      [8, 5, false],
-    ],
-  );
-  assert.notEqual(result.frames[0].source, result.frames[1].source);
-  for (let y = 0; y < 5; y++)
-    for (let x = 0; x < 14; x++) {
-      const image = images[x < 6 ? 0 : 1];
-      const sourceX = x < 6 ? x : x - 6;
-      const expected =
-        y >= image.height
-          ? [0, 0, 0, 0]
-          : image.expected.slice(
-              (y * image.width + sourceX) * 4,
-              (y * image.width + sourceX) * 4 + 4,
-            );
-      assert.deepEqual(result.pixels.slice((y * 14 + x) * 4, (y * 14 + x) * 4 + 4), expected);
+  for (const target of [
+    { package: 'phaser', version: '4.2.1', format: 'phaser4' },
+    { package: 'phaser3', version: '3.90.0', format: 'phaser3' },
+  ]) {
+    for (const mode of ['single', 'multi', 'rotation']) {
+      const rotate = mode === 'rotation';
+      const packed = await pack({
+        inputs: images,
+        atlas: {
+          name: 'test',
+          maxWidth: mode === 'single' ? 64 : rotate ? 3 : 6,
+          maxHeight: mode === 'single' ? 64 : rotate ? 6 : 3,
+          rotate,
+          extrude: mode === 'single' ? 1 : 0,
+          padding: mode === 'single' ? 2 : 0,
+        },
+        format: rotate
+          ? (pages, name) => [
+              {
+                name: `${name}.json`,
+                data: new TextEncoder().encode(
+                  JSON.stringify({
+                    textures: pages.map((page) => ({
+                      image: page.image,
+                      frames: JSON.parse(
+                        new TextDecoder().decode(exportAtlas([page], 'json-array')[0].data),
+                      ).frames,
+                    })),
+                  }),
+                ),
+              },
+            ]
+          : target.format,
+      });
+      assert.equal(packed.report.pageCount, mode === 'single' ? 1 : 2);
+      const files = new Map(packed.files.map((file) => ['/' + file.name, file.data]));
+      files.set(
+        '/phaser.js',
+        await readFile(
+          new URL(`../node_modules/${target.package}/dist/phaser.js`, import.meta.url),
+        ),
+      );
+      files.set(
+        '/',
+        Buffer.from(`<!doctype html><meta charset="utf-8"><script src="/phaser.js"></script><script>
+window.testResult=null;
+new Phaser.Game({type:Phaser.WEBGL,width:64,height:64,transparent:true,antialias:false,pixelArt:true,banner:false,scene:{
+preload(){this.load.multiatlas('test','/test.json','/');},
+create(){
+ const texture=this.textures.get('test');
+ const frames=['a','b'].map(id=>{const f=texture.get(id);return {width:f.realWidth,height:f.realHeight,rotated:f.rotated,source:f.sourceIndex};});
+ this.add.image(0,0,'test','a').setOrigin(0);this.add.image(6,0,'test','b').setOrigin(0);
+ this.time.delayedCall(100,()=>this.game.renderer.snapshot(image=>{
+  const canvas=document.createElement('canvas');canvas.width=14;canvas.height=5;
+  const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
+  window.testResult={version:Phaser.VERSION,frames,pixels:Array.from(ctx.getImageData(0,0,14,5).data)};
+ }));
+}}});</script>`),
+      );
+      const server = createServer((req, res) => {
+        const name = new URL(req.url, 'http://localhost').pathname;
+        const data = files.get(name);
+        if (!data) {
+          res.writeHead(404);
+          res.end();
+          return;
+        }
+        res.setHeader(
+          'Content-Type',
+          name.endsWith('.png')
+            ? 'image/png'
+            : name.endsWith('.json')
+              ? 'application/json'
+              : name.endsWith('.js')
+                ? 'text/javascript'
+                : 'text/html',
+        );
+        res.end(data);
+      });
+      await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+      const page = await browser.newPage();
+      try {
+        const errors = [];
+        page.on('pageerror', (e) => errors.push(e.message));
+        await page.goto(`http://127.0.0.1:${server.address().port}/`);
+        await page.waitForFunction(() => window.testResult !== null, undefined, { timeout: 30000 });
+        const result = await page.evaluate(() => window.testResult);
+        assert.deepEqual(errors, []);
+        assert.equal(result.version, target.version);
+        assert.deepEqual(
+          result.frames.map((f) => [f.width, f.height, f.rotated]),
+          [
+            [6, 3, rotate],
+            [8, 5, rotate],
+          ],
+        );
+        if (mode === 'single') assert.equal(result.frames[0].source, result.frames[1].source);
+        else assert.notEqual(result.frames[0].source, result.frames[1].source);
+        let mismatches = 0;
+        for (let y = 0; y < 5; y++)
+          for (let x = 0; x < 14; x++) {
+            const image = images[x < 6 ? 0 : 1],
+              sx = x < 6 ? x : x - 6;
+            const expected =
+              y >= image.height
+                ? [0, 0, 0, 0]
+                : image.expected.slice((y * image.width + sx) * 4, (y * image.width + sx) * 4 + 4);
+            if (!expected.every((v, i) => v === result.pixels[(y * 14 + x) * 4 + i])) mismatches++;
+          }
+        console.log(`Phaser ${target.version} ${mode}: ${mismatches} pixel mismatches`);
+        if (rotate) assert.ok(mismatches > 0);
+        else assert.equal(mismatches, 0);
+      } finally {
+        await page.close();
+        await new Promise((resolve) => server.close(resolve));
+      }
     }
-  console.log(
-    'Phaser 3.90.0: real multiatlas loader, separate pages, trimmed offsets and rendered pixels passed.',
-  );
+  }
 } finally {
-  await browser?.close();
-  await new Promise((resolve) => server.close(resolve));
+  await browser.close();
 }

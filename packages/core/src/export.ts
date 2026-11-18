@@ -26,11 +26,11 @@ export function exportAtlas(
   format: ExportFormat,
   name = 'atlas',
 ): OutputFile[] {
-  if (!['json-hash', 'json-array', 'phaser3'].includes(format))
+  if (!['json-hash', 'json-array', 'phaser4', 'phaser3'].includes(format))
     throw new AtlasError('INVALID_OPTIONS', `Unknown format: ${format}`);
-  if (format === 'phaser3') {
+  if (format === 'phaser4' || format === 'phaser3') {
     if (pages.some((page) => page.frames.some((frame) => frame.rotated))) {
-      throw new AtlasError('INVALID_OPTIONS', 'Phaser 3 export requires unrotated frames');
+      throw new AtlasError('INVALID_OPTIONS', 'Phaser export requires unrotated frames');
     }
     return [
       jsonFile(`${name}.json`, {

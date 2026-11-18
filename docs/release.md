@@ -7,7 +7,7 @@
 - 发布入口：GitHub Actions → Release → Run workflow，选择 main。
 - 发布环境：npm，仅 main 分支可部署；不保存长期 npm 发布 token。
 
-CI 检查三种操作系统和三个 Node 版本，另外验证 Phaser 3 实际加载。Release 会重新运行 pnpm check 和 Phaser 检查，通过后由 Lerna 发布 registry 中不存在的新版本。
+CI 检查三种操作系统和三个 Node 版本，另外验证 Phaser 4 实际加载。Release 会重新运行 pnpm check 和 Phaser 检查，通过后由 Lerna 发布 registry 中不存在的新版本。
 
 ## 日常发布
 

@@ -21,10 +21,10 @@ export interface PackOutput {
 export async function pack(request: PackRequest): Promise<PackOutput> {
   const start = performance.now();
   const options = resolveOptions(request.atlas);
-  if (request.format === 'phaser3' && options.rotate) {
+  if ((request.format === 'phaser4' || request.format === 'phaser3') && options.rotate) {
     throw new AtlasError(
       'INVALID_OPTIONS',
-      'Phaser 3.90 does not render rotated atlas frames correctly; set rotate to false',
+      'Phaser 4.2.1 / 3.90.0 do not render rotated atlas frames correctly; set rotate to false',
     );
   }
   const sprites = await loadInputs(request.inputs, request.cwd ?? process.cwd());

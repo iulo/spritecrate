@@ -1,6 +1,6 @@
 # @spritetunk/node
 
-SpriteTunk 的 Node.js SDK，支持静态 PNG 输入、图片编解码和显式文件输出。
+The SpriteTunk Node.js SDK, with PNG codecs and explicit file output.
 
 ```bash
 npm install @spritetunk/node
@@ -12,19 +12,20 @@ import { pack, writeOutput } from '@spritetunk/node';
 const result = await pack({
   inputs: ['assets/**/*.png'],
   atlas: { name: 'characters' },
-  format: 'phaser3',
+  format: 'phaser4',
 });
 await writeOutput(result.files, { directory: 'dist/atlas' });
 ```
 
-支持文件 glob 或具名 PNG 字节输入。Phaser 3 导出要求关闭旋转。
+Accepts file globs or named PNG bytes. Phaser 4 is the primary target; Phaser exports require rotation to be disabled.
 
-## 文档与来源
+## Documentation
 
-- [项目文档](https://github.com/iulo/spritetunk#readme)
-- [配置参考](https://github.com/iulo/spritetunk/blob/main/docs/configuration.md)
+- [Project README](https://github.com/iulo/spritetunk#readme)
+- [简体中文](https://github.com/iulo/spritetunk/blob/main/README_CN.md)
+- [Configuration](https://github.com/iulo/spritetunk/blob/main/docs/configuration.md)
 
-参考 [odrick/free-tex-packer-core](https://github.com/odrick/free-tex-packer-core)，移植部分保留原作者声明，详见 THIRD_PARTY_NOTICES.md 和 LICENSES。
+Based in part on [odrick/free-tex-packer-core](https://github.com/odrick/free-tex-packer-core). Adapted portions retain the original attribution; see THIRD_PARTY_NOTICES.md and LICENSES.
 
 ## License
 

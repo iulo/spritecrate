@@ -81,7 +81,7 @@ const result = await pack({
     rotate: false,
     extrude: 1,
   },
-  format: 'phaser3',
+  format: 'phaser4',
 });
 
 await writeOutput(result.files, { directory: 'dist/atlas' });
@@ -138,4 +138,4 @@ await writeOutput(result.files, { directory: 'dist/atlas' });
 
 ## 实测后的约束
 
-Phaser 3.90.0 实际 WebGL 消费测试发现旋转帧采样错误，因此 Phaser 3 导出拒绝旋转；通用 core 和 JSON 导出继续支持旋转。类型和浏览器验证均不代表 YYRT 游戏运行时设备验证。
+Phaser 4.2.1 实际 WebGL 消费测试发现旋转帧采样错误，因此 Phaser 4 导出拒绝旋转；通用 core 和 JSON 导出继续支持旋转。类型和浏览器验证均不代表 YYRT 游戏运行时设备验证。

@@ -1,6 +1,6 @@
 {
   "name": "spritetunk-workspace",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "homepage": "https://github.com/iulo/spritetunk#readme",
   "bugs": {
@@ -38,7 +38,8 @@
     "lerna": "10.1.1",
     "oxfmt": "0.79.0",
     "oxlint": "1.94.0",
-    "phaser": "3.90.0",
+    "phaser": "4.2.1",
+    "phaser3": "npm:phaser@3.90.0",
     "publint": "0.3.25",
     "sharp": "0.35.5",
     "tsdown": "0.23.7",

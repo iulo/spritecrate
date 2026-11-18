@@ -3,7 +3,7 @@
 ## CLI
 
 ```bash
-spritetunk pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser3
+spritetunk pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser4
 spritetunk pack --config spritetunk.config.json --json
 spritetunk pack --config spritetunk.config.json --dry-run
 ```
@@ -15,7 +15,7 @@ JSON 配置示例：
   "$schema": "./node_modules/@spritetunk/cli/config.schema.json",
   "inputs": ["assets/**/*.png"],
   "outDir": "dist/atlas",
-  "format": "phaser3",
+  "format": "phaser4",
   "atlas": {
     "name": "game",
     "maxWidth": 2048,
@@ -61,9 +61,9 @@ core 的 frame 使用实际图集矩形宽高；rotated=true 时物理宽高交�
 
 JSON Hash、JSON Array 导出遵循 TexturePacker 的逻辑宽高约定：rotated=true 时描述中的 frame.w/h 为未旋转宽高。需要据 rotated 交换，才能获得物理采样范围。
 
-Phaser 3 导出不允许旋转。已在 Phaser 3.90.0 的真实 WebGL 渲染中验证：旋转元数据能被加载，但采样像素不正确。因此 SDK 对 format=phaser3 + rotate=true 明确报 INVALID_OPTIONS；core 导出器也拒绝包含已旋转帧的 Phaser 输出。不要通过通用 JSON 格式绕过此限制后加载到 Phaser。
+Phaser 4 导出不允许旋转。已在 Phaser 4.2.1 的真实 WebGL 渲染中验证：旋转元数据能被加载，但采样像素不正确。因此 SDK 对 format=phaser4 + rotate=true 明确报 INVALID_OPTIONS；core 导出器也拒绝包含已旋转帧的 Phaser 输出。不要通过通用 JSON 格式绕过此限制后加载到 Phaser。
 
-单页 PNG 使用 name.png，多页使用 name-0.png、name-1.png。JSON Hash/Array 每页一个同名 JSON；Phaser 3 为一个 name.json，textures 中引用所有页，使用 this.load.multiatlas 加载。
+单页 PNG 使用 name.png，多页使用 name-0.png、name-1.png。JSON Hash/Array 每页一个同名 JSON；Phaser 4 为一个 name.json，textures 中引用所有页，使用 this.load.multiatlas 加载。
 
 SDK format 还可传入 `(pages, name) => OutputFile[]` 自定义描述文件导出函数。CLI 只接受三个内置格式。自定义输出文件必须是平铺的安全文件名，不能含目录。
 
@@ -81,3 +81,7 @@ writeOutput 使用锁、暂存文件、备份及 manifest。它拒绝覆盖非�
 - 固定输入、配置和版本环境下排布及输出稳定；不保证不同原生编码器环境下 PNG 字节一致。
 - 不读取上游 GUI 工程，不承诺旧 SDK 配置或布局逐字节兼容。
 - ESM-only；CommonJS 调用方可使用动态 import。
+
+## Phaser 版本
+
+Phaser 4 是主要目标，使用 format=phaser4。保留 phaser3 作为兼容入口；当前两者都使用 multiatlas 描述结构，且都禁止旋转。

@@ -17,16 +17,19 @@ afterEach(async () => {
 });
 
 describe('Node SDK', () => {
-  it('rejects Phaser rotation before reading inputs', async () => {
-    await expect(
-      pack({ inputs: ['missing.png'], format: 'phaser3', atlas: { rotate: true } }),
-    ).rejects.toMatchObject({ code: 'INVALID_OPTIONS' });
-  });
+  it.each(['phaser4', 'phaser3'] as const)(
+    'rejects %s rotation before reading inputs',
+    async (format) => {
+      await expect(
+        pack({ inputs: ['missing.png'], format, atlas: { rotate: true } }),
+      ).rejects.toMatchObject({ code: 'INVALID_OPTIONS' });
+    },
+  );
   it('encodes a valid PNG and emits structured descriptors without writing', async () => {
     const result = await pack({
       inputs: [{ id: 'hero.png', data: await png(sprite('hero.png', 3, 4)) }],
       atlas: { name: 'game', extrude: 0 },
-      format: 'phaser3',
+      format: 'phaser4',
     });
     expect(result.files.map((file) => file.name)).toEqual(['game.png', 'game.json']);
     const decoded = await sharp(result.files[0]!.data).raw().toBuffer({ resolveWithObject: true });

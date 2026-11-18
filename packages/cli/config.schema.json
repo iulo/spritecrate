@@ -20,7 +20,7 @@
       "minLength": 1
     },
     "format": {
-      "enum": ["json-hash", "json-array", "phaser3"]
+      "enum": ["json-hash", "json-array", "phaser4", "phaser3"]
     },
     "atlas": {
       "type": "object",

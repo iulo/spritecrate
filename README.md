@@ -1,54 +1,56 @@
 # SpriteTunk
 
-面向 JavaScript 项目的纹理图集打包工具，提供 SDK 和命令行支持。
+English | [简体中文](README_CN.md)
 
-将多张 PNG 合并为图集，生成可供 Phaser 3 等引擎读取的描述文件，适合接入游戏资源构建流程。
+A texture atlas packer for JavaScript projects, with a Node.js SDK and CLI.
 
-## 特性
+Combine PNG sprites into texture atlases and export metadata for Phaser 4 and other engines. Use it in your asset pipeline or work directly with RGBA pixels through the standalone core.
 
-- **图集排布**：MaxRects 算法，支持多页、固定尺寸、2 的幂尺寸和正方形约束。
-- **素材处理**：透明裁边、重复图片合并、可选 90° 旋转和边缘像素扩展。
-- **多种导出**：JSON Hash、JSON Array 和 Phaser 3；SDK 支持自定义描述文件导出。
-- **构建集成**：命令行、JSON 配置、dry-run 和机器可读的执行结果。
-- **TypeScript 支持**：完整类型声明，可单独使用不依赖 Node.js 或 DOM 的核心包。
+## Features
 
-## 快速开始
+- **Atlas packing** — MaxRects, multiple pages, fixed sizes, power-of-two dimensions, and square atlases.
+- **Sprite processing** — transparent trimming, deduplication, optional 90° rotation, and edge extrusion.
+- **Export formats** — JSON Hash, JSON Array, Phaser 4, and custom metadata exporters through the SDK.
+- **Build integration** — CLI, JSON configuration, dry runs, and machine-readable results.
+- **TypeScript support** — type declarations and a core package with no Node.js or DOM dependencies.
 
-安装 Node.js SDK：
+## Quick start
+
+Install the Node.js SDK:
 
 ```bash
 npm install @spritetunk/node
 ```
 
-安装命令行工具：
+Or install the CLI:
 
 ```bash
 npm install --save-dev @spritetunk/cli
-npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser3
+npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
-需要 Node.js 22.18.0 或更高版本，所有包均为 ESM。
+Requires Node.js 22.18.0 or later. All packages are ESM.
 
-## 使用
+## Usage
 
-### 命令行
+### CLI
 
-将指定目录中的 PNG 打包为 Phaser 3 图集：
+Pack PNG files into a Phaser 4 atlas:
 
 ```bash
 npx spritetunk pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
-  --format phaser3
+  --format phaser4
 ```
 
-也可以使用 JSON 配置文件：
+You can also use a JSON configuration file:
 
 ```json
 {
   "inputs": ["assets/**/*.png"],
   "outDir": "dist/atlas",
-  "format": "phaser3",
+  "format": "phaser4",
   "atlas": {
     "name": "characters",
     "maxWidth": 2048,
@@ -59,20 +61,20 @@ npx spritetunk pack "assets/**/*.png" \
 }
 ```
 
-保存为 `spritetunk.config.json` 后运行：
+Save it as `spritetunk.config.json` and run:
 
 ```bash
 npx spritetunk pack --config spritetunk.config.json
 ```
 
-预览产物而不写入文件，或获取 JSON 格式的执行结果：
+Preview the output without writing files, or return a JSON report:
 
 ```bash
 npx spritetunk pack --config spritetunk.config.json --dry-run
 npx spritetunk pack --config spritetunk.config.json --json
 ```
 
-配置文件中的路径相对于配置文件所在目录；命令行中传入的路径相对于当前工作目录。更多选项见[配置文档](docs/configuration.md)。
+Paths in a configuration file are relative to that file. Paths passed on the command line are relative to the current working directory. See the [configuration reference](docs/configuration.md) for all options.
 
 ### Node.js SDK
 
@@ -86,19 +88,19 @@ const result = await pack({
     maxWidth: 2048,
     maxHeight: 2048,
   },
-  format: 'phaser3',
+  format: 'phaser4',
 });
 
 await writeOutput(result.files, { directory: 'dist/atlas' });
 ```
 
-`pack()` 返回产物内容和统计信息，`writeOutput()` 负责写入文件。也可以通过 `{ id, data: Uint8Array }` 直接传入 PNG 字节。
+`pack()` returns output files and statistics. `writeOutput()` writes those files to disk. You can also pass PNG bytes as `{ id, data: Uint8Array }`.
 
-完整示例见 [examples/node-basic.mjs](examples/node-basic.mjs)。
+See [examples/node-basic.mjs](examples/node-basic.mjs) for a complete example.
 
-### Phaser 3
+### Phaser 4
 
-使用 Phaser 3 的 `multiatlas` 加载器读取导出的图集：
+Load the exported atlas with Phaser's `multiatlas` loader:
 
 ```js
 // preload()
@@ -108,38 +110,40 @@ this.load.multiatlas('characters', 'dist/atlas/characters.json', 'dist/atlas/');
 this.add.image(100, 100, 'characters', 'assets/hero.png');
 ```
 
-精灵名称保留输入文件的相对路径和扩展名。Phaser 3 导出要求关闭旋转，详见下方支持范围。
+Frame names preserve the input file's relative path and extension. Rotation must be disabled for Phaser 4 exports; see the limitations below.
 
-## 包
+## Packages
 
-| 包                 | 用途                                        |
-| ------------------ | ------------------------------------------- |
-| `@spritetunk/core` | RGBA 像素处理、图集排布、合成和描述文件导出 |
-| `@spritetunk/node` | Node.js SDK，提供图片编解码与文件读写       |
-| `@spritetunk/cli`  | 命令行工具，命令名为 `spritetunk`           |
+| Package            | Purpose                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| `@spritetunk/core` | RGBA processing, atlas packing, compositing, and metadata export |
+| `@spritetunk/node` | Node.js SDK with image codecs and file I/O                       |
+| `@spritetunk/cli`  | Command-line tool, available as `spritetunk`                     |
 
-需要直接操作 RGBA 数据时，可单独安装 `@spritetunk/core`。
+Use `@spritetunk/core` on its own when you need to work directly with RGBA data.
 
-## 支持范围
+Phaser 4 is the primary target. The `phaser3` export remains available for compatibility.
 
-- 当前支持静态 PNG 输入和 PNG 输出。
-- 通用 core/JSON 支持旋转；Phaser 3 导出禁止旋转，因为 Phaser 3.90.0 的实测渲染存在采样错误。
-- 暂不提供 GUI、watch、缩放或上游 GUI 工程文件迁移。
+## Limitations
 
-输出目录由清单跟踪，已有的无关文件或被手工修改过的同名文件不会被覆盖。详细行为和资源限制见[配置文档](docs/configuration.md)。
+- Static PNG input and PNG output.
+- The core and generic JSON exporters support rotation. Phaser 4 exports reject it because testing with Phaser 4.2.1 showed incorrect rendering of rotated frames.
+- No GUI, watch mode, scaling, or migration of upstream GUI project files yet.
 
-## 文档
+Output files are tracked in a manifest. Unrelated files and manually edited files are not overwritten. See the [configuration reference](docs/configuration.md) for output behavior and resource limits.
 
-- [配置与输出格式](docs/configuration.md)
-- [架构设计](docs/architecture.md)
-- [上游移植记录](docs/upstream.md)
-- [验证记录](docs/validation.md)
+## Documentation
 
-## 参与开发
+- [Configuration and export formats](docs/configuration.md)
+- [Architecture](docs/architecture.md)
+- [Upstream sources](docs/upstream.md)
+- [Validation](docs/validation.md)
 
-欢迎提交 Issue 和 Pull Request。开发环境、检查命令和贡献约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+## Contributing
 
-开发环境需要 Node.js `^22.22.2 || ^24.15.0 || ^26.0.0` 和 pnpm `10.34.7`。在仓库根目录运行：
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+
+Development requires Node.js `^22.22.2 || ^24.15.0 || ^26.0.0` and pnpm `10.34.7`. From the repository root:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -148,16 +152,16 @@ pnpm check
 pnpm example
 ```
 
-示例会生成测试素材，并在 `examples/output/` 输出图集。
+The example generates sample sprites and writes the atlas to `examples/output/`.
 
-## 致谢
+## Acknowledgments
 
-本项目参考了 [odrick/free-tex-packer-core](https://github.com/odrick/free-tex-packer-core)，其中 MaxRects 排布实现基于上游代码进行 TypeScript 改写；图片处理规则与导出格式也参考了该项目。产品功能设计参考了 [odrick/free-tex-packer](https://github.com/odrick/free-tex-packer)。感谢原作者及贡献者。
+This project draws on [odrick/free-tex-packer-core](https://github.com/odrick/free-tex-packer-core). Its MaxRects implementation is adapted from the upstream code in TypeScript; image-processing rules and export formats also reference that project. Product features are informed by [odrick/free-tex-packer](https://github.com/odrick/free-tex-packer). Thanks to the original author and contributors.
 
-移植部分保留原作者 Copyright (c) 2018 Alexander Norinchak 及 MIT 条款，详见各包的 `THIRD_PARTY_NOTICES.md` 和 `LICENSES/`。
+Adapted portions retain Copyright (c) 2018 Alexander Norinchak and the MIT license. See `THIRD_PARTY_NOTICES.md` and `LICENSES/` in each package.
 
-## 许可证
+## License
 
-[MIT](LICENSE) © 2026 SpriteTunk contributors。
+[MIT](LICENSE) © 2026 SpriteTunk contributors.
 
-欢迎在使用工具的产品文档中注明 SpriteTunk；这是自愿请求，不构成额外许可条件。
+Attribution in your product documentation is appreciated, but is not an additional license requirement.

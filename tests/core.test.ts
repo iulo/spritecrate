@@ -168,9 +168,11 @@ describe('validation and export', () => {
     });
     const json = JSON.parse(new TextDecoder().decode(exportAtlas(pages, 'json-hash')[0]!.data));
     expect(json.frames.wide.frame).toEqual({ x: 0, y: 0, w: 6, h: 3 });
-    expect(() => exportAtlas(pages, 'phaser3')).toThrowError(
-      expect.objectContaining({ code: 'INVALID_OPTIONS' }),
-    );
+    for (const format of ['phaser4', 'phaser3'] as const) {
+      expect(() => exportAtlas(pages, format)).toThrowError(
+        expect.objectContaining({ code: 'INVALID_OPTIONS' }),
+      );
+    }
   });
   it.each([
     { maxWidth: 0 },
@@ -208,7 +210,7 @@ describe('validation and export', () => {
     ).toThrowError(expect.objectContaining({ code: 'INVALID_INPUT' }));
   });
 
-  it.each(['json-hash', 'json-array', 'phaser3'] as const)(
+  it.each(['json-hash', 'json-array', 'phaser4', 'phaser3'] as const)(
     'exports valid %s JSON with Unicode and special ids',
     (format) => {
       const pages = pack({
@@ -220,7 +222,9 @@ describe('validation and export', () => {
       const data = JSON.parse(text);
       expect(text).toContain('SpriteTunk');
       expect(
-        format === 'phaser3' ? data.textures[0].frames.length : Object.keys(data.frames).length,
+        format.startsWith('phaser')
+          ? data.textures[0].frames.length
+          : Object.keys(data.frames).length,
       ).toBe(2);
       if (format === 'json-hash') expect(Object.hasOwn(data.frames, '__proto__')).toBe(true);
     },

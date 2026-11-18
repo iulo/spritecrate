@@ -14,7 +14,7 @@ for (const [name, background] of [
 const result = await pack({
   inputs: ['examples/assets/*.png'],
   atlas: { name: 'atlas' },
-  format: 'phaser3',
+  format: 'phaser4',
 });
 await writeOutput(result.files, { directory: 'examples/output' });
 console.log(result.report);

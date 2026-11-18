@@ -1,6 +1,6 @@
 {
   "name": "@spritetunk/cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SpriteTunk cli: deterministic texture atlas tooling",
   "keywords": [
     "phaser",

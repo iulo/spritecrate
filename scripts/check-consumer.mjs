@@ -80,7 +80,7 @@ import { pack as packPixels } from '@spritetunk/core';
 import { pack, writeOutput } from '@spritetunk/node';
 const core = packPixels({ sprites: [{ id: 'x', width: 1, height: 1, pixels: new Uint8Array([1, 2, 3, 255]) }] });
 if (core.pages.length !== 1) throw new Error('core consumer failed');
-const result = await pack({ inputs: ['assets/*.png'], format: 'phaser3' });
+const result = await pack({ inputs: ['assets/*.png'], format: 'phaser4' });
 await writeOutput(result.files, { directory: 'sdk-output' });
 `,
   );
