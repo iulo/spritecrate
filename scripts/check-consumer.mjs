@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 
 const root = process.cwd();
+const useRegistry = process.argv.includes('--registry');
 const temporary = await mkdtemp(path.join(tmpdir(), 'spritetunk-consumer-'));
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const tooling = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
@@ -13,8 +14,9 @@ for (const name of ['core', 'node', 'cli']) {
   const manifest = JSON.parse(
     await readFile(path.join(root, 'packages', name, 'package.json'), 'utf8'),
   );
-  dependencies[manifest.name] =
-    `file:${path.join(root, '.cache', 'packs', `spritetunk-${name}-${manifest.version}.tgz`)}`;
+  dependencies[manifest.name] = useRegistry
+    ? manifest.version
+    : `file:${path.join(root, '.cache', 'packs', `spritetunk-${name}-${manifest.version}.tgz`)}`;
 }
 const run = (args) =>
   execFileSync(pnpm, args, {
@@ -23,6 +25,27 @@ const run = (args) =>
     shell: process.platform === 'win32',
   });
 try {
+  if (useRegistry) {
+    const deadline = Date.now() + 10 * 60 * 1000;
+    while (true) {
+      const missing = [];
+      for (const [name, version] of Object.entries(dependencies)) {
+        const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`, {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(15000),
+        });
+        if (response.ok) {
+          const metadata = await response.json();
+          if (metadata.versions[version]) continue;
+        } else if (response.status !== 404) throw new Error(`Registry returned ${response.status}`);
+        missing.push(`${name}@${version}`);
+      }
+      if (!missing.length) break;
+      if (Date.now() >= deadline) throw new Error(`Registry timed out: ${missing.join(', ')}`);
+      console.log(`Waiting: ${missing.join(', ')}`);
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
+  }
   await writeFile(
     path.join(temporary, 'package.json'),
     JSON.stringify(
@@ -40,7 +63,12 @@ try {
       2,
     ),
   );
-  run(['install', '--prefer-offline', '--ignore-scripts']);
+  run([
+    'install',
+    ...(useRegistry ? [] : ['--prefer-offline']),
+    '--ignore-scripts',
+    '--registry=https://registry.npmjs.org',
+  ]);
   await mkdir(path.join(temporary, 'assets'));
   await sharp({ create: { width: 2, height: 3, channels: 4, background: '#ff0000' } })
     .png()
@@ -74,7 +102,9 @@ await writeOutput(result.files, { directory: 'sdk-output' });
   run(['exec', 'spritetunk', 'pack', 'assets/*.png', '--out-dir', 'cli-output', '--json']);
   const json = JSON.parse(await readFile(path.join(temporary, 'cli-output', 'atlas.json'), 'utf8'));
   if (!json.frames['assets/a.png']) throw new Error('CLI consumer output is missing the frame');
-  console.log('Installed tarballs: SDK runtime, TypeScript declarations and CLI bin passed.');
+  console.log(
+    `${useRegistry ? 'Public npm registry' : 'Installed tarballs'}: SDK runtime, TypeScript declarations and CLI bin passed.`,
+  );
 } finally {
   await rm(temporary, { recursive: true, force: true });
 }

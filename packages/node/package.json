@@ -1,6 +1,6 @@
 {
   "name": "@spritetunk/node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SpriteTunk node: deterministic texture atlas tooling",
   "keywords": [
     "phaser",

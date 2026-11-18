@@ -14,20 +14,20 @@
 
 ## 快速开始
 
-需要 Node.js `^22.22.2 || ^24.15.0 || ^26.0.0` 和 pnpm `10.34.7`。在仓库根目录运行：
+安装 Node.js SDK：
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm build
+npm install @spritetunk/node
 ```
 
-运行内置示例：
+安装命令行工具：
 
 ```bash
-pnpm example
+npm install --save-dev @spritetunk/cli
+npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser3
 ```
 
-示例会生成两张测试素材，并将 PNG 图集和 Phaser 3 描述文件写入 `examples/output/`。
+需要 Node.js 22.18.0 或更高版本，所有包均为 ESM。
 
 ## 使用
 
@@ -36,7 +36,7 @@ pnpm example
 将指定目录中的 PNG 打包为 Phaser 3 图集：
 
 ```bash
-pnpm cli pack "assets/**/*.png" \
+npx spritetunk pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser3
@@ -62,14 +62,14 @@ pnpm cli pack "assets/**/*.png" \
 保存为 `spritetunk.config.json` 后运行：
 
 ```bash
-pnpm cli pack --config spritetunk.config.json
+npx spritetunk pack --config spritetunk.config.json
 ```
 
 预览产物而不写入文件，或获取 JSON 格式的执行结果：
 
 ```bash
-pnpm cli pack --config spritetunk.config.json --dry-run
-pnpm cli pack --config spritetunk.config.json --json
+npx spritetunk pack --config spritetunk.config.json --dry-run
+npx spritetunk pack --config spritetunk.config.json --json
 ```
 
 配置文件中的路径相对于配置文件所在目录；命令行中传入的路径相对于当前工作目录。更多选项见[配置文档](docs/configuration.md)。
@@ -118,7 +118,7 @@ this.add.image(100, 100, 'characters', 'assets/hero.png');
 | `@spritetunk/node` | Node.js SDK，提供图片编解码与文件读写       |
 | `@spritetunk/cli`  | 命令行工具，命令名为 `spritetunk`           |
 
-所有包均为 ESM。当前源码中的 `pnpm cli` 是仓库提供的本地命令入口。
+需要直接操作 RGBA 数据时，可单独安装 `@spritetunk/core`。
 
 ## 支持范围
 
@@ -139,9 +139,16 @@ this.add.image(100, 100, 'characters', 'assets/hero.png');
 
 欢迎提交 Issue 和 Pull Request。开发环境、检查命令和贡献约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
+开发环境需要 Node.js `^22.22.2 || ^24.15.0 || ^26.0.0` 和 pnpm `10.34.7`。在仓库根目录运行：
+
 ```bash
+pnpm install --frozen-lockfile
+pnpm build
 pnpm check
+pnpm example
 ```
+
+示例会生成测试素材，并在 `examples/output/` 输出图集。
 
 ## 致谢
 

@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { png, sprite } from './helpers.js';
+import { VERSION } from '@spritetunk/core';
 
 const exec = promisify(execFile);
 const bin = path.resolve('packages/cli/dist/index.js');
@@ -22,7 +23,7 @@ afterEach(async () => {
 describe('CLI subprocess', () => {
   it('supports help and version', async () => {
     expect((await exec(process.execPath, [bin, '--help'])).stdout).toContain('Usage:');
-    expect((await exec(process.execPath, [bin, '--version'])).stdout.trim()).toBe('0.1.0');
+    expect((await exec(process.execPath, [bin, '--version'])).stdout.trim()).toBe(VERSION);
   });
 
   it('packs from configuration relative to the config directory', async () => {

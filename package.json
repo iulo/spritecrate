@@ -1,6 +1,6 @@
 {
   "name": "spritetunk-workspace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "homepage": "https://github.com/iulo/spritetunk#readme",
   "bugs": {
@@ -26,7 +26,8 @@
     "release": "lerna publish from-package",
     "check:phaser": "node scripts/check-phaser.mjs",
     "cli": "node packages/cli/dist/index.js",
-    "example": "node examples/node-basic.mjs"
+    "example": "node examples/node-basic.mjs",
+    "check:registry": "node scripts/check-consumer.mjs --registry"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
