@@ -36,7 +36,17 @@ try {
         });
         if (response.ok) {
           const metadata = await response.json();
-          if (metadata.versions[version]) continue;
+          const published = metadata.versions[version];
+          if (published) {
+            // npm metadata can propagate before the associated tarball is downloadable.
+            const archive = await fetch(published.dist.tarball, {
+              method: 'HEAD',
+              cache: 'no-store',
+              signal: AbortSignal.timeout(15000),
+            });
+            if (archive.ok) continue;
+            if (archive.status !== 404) throw new Error(`Tarball returned ${archive.status}`);
+          }
         } else if (response.status !== 404) throw new Error(`Registry returned ${response.status}`);
         missing.push(`${name}@${version}`);
       }
