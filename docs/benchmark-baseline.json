@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "node": "v26.13.1",
+  "platform": "darwin-arm64",
+  "cpu": "Apple M4",
+  "fixture": "self-generated seeded dimensions; RGBA core only; 1 warmup + 3 measurements; peak RSS is cumulative process high-water mark",
+  "cases": [
+    {
+      "count": 10,
+      "medianMs": 1.636250000000004,
+      "pages": 1,
+      "occupancy": 0.5017619047619047,
+      "processPeakRssKiB": 47840
+    },
+    {
+      "count": 100,
+      "medianMs": 9.653499999999994,
+      "pages": 1,
+      "occupancy": 0.6978397253787879,
+      "processPeakRssKiB": 58384
+    },
+    {
+      "count": 500,
+      "medianMs": 57.673542,
+      "pages": 3,
+      "occupancy": 0.7549603780110677,
+      "processPeakRssKiB": 101024
+    }
+  ]
+}

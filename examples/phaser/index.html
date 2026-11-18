@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>SpriteTunk — Phaser 3 example</title>
+  <script src="../../node_modules/phaser/dist/phaser.js"></script>
+  <script>
+    new Phaser.Game({
+      type: Phaser.AUTO,
+      width: 400,
+      height: 240,
+      backgroundColor: '#202631',
+      scene: {
+        preload() {
+          this.load.multiatlas('demo', '../output/atlas.json', '../output/');
+        },
+        create() {
+          this.add.image(130, 120, 'demo', 'examples/assets/red.png').setScale(3);
+          this.add.image(270, 120, 'demo', 'examples/assets/blue.png').setScale(3);
+        },
+      },
+    });
+  </script>
+</html>

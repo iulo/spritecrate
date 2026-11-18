@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SpriteTunk configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "outDir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "format": {
+      "enum": ["json-hash", "json-array", "phaser3"]
+    },
+    "atlas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxWidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "maxHeight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "padding": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8192
+        },
+        "border": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8192
+        },
+        "extrude": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8192
+        },
+        "alphaThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "fixedSize": {
+          "type": "boolean"
+        },
+        "powerOfTwo": {
+          "type": "boolean"
+        },
+        "square": {
+          "type": "boolean"
+        },
+        "trim": {
+          "type": "boolean"
+        },
+        "deduplicate": {
+          "type": "boolean"
+        },
+        "rotate": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@spritetunk/core",
+  "version": "0.1.0",
+  "description": "SpriteTunk core: deterministic texture atlas tooling",
+  "keywords": [
+    "phaser",
+    "spritesheet",
+    "spritetunk",
+    "texture-atlas",
+    "texture-packer"
+  ],
+  "homepage": "https://github.com/iulo/spritetunk#readme",
+  "bugs": {
+    "url": "https://github.com/iulo/spritetunk/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iulo/spritetunk.git",
+    "directory": "packages/core"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "LICENSES",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json",
+    "check:package": "node ../../scripts/check-package.mjs"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

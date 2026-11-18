@@ -1,0 +1,56 @@
+{
+  "name": "@spritetunk/cli",
+  "version": "0.1.0",
+  "description": "SpriteTunk cli: deterministic texture atlas tooling",
+  "keywords": [
+    "phaser",
+    "spritesheet",
+    "spritetunk",
+    "texture-atlas",
+    "texture-packer"
+  ],
+  "homepage": "https://github.com/iulo/spritetunk#readme",
+  "bugs": {
+    "url": "https://github.com/iulo/spritetunk/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iulo/spritetunk.git",
+    "directory": "packages/cli"
+  },
+  "bin": {
+    "spritetunk": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "LICENSES",
+    "THIRD_PARTY_NOTICES.md",
+    "config.schema.json"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./config.schema.json": "./config.schema.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json",
+    "check:package": "node ../../scripts/check-package.mjs"
+  },
+  "dependencies": {
+    "@spritetunk/node": "workspace:^",
+    "ajv": "8.20.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
