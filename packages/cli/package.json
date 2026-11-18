@@ -3,7 +3,11 @@
   "version": "0.1.2",
   "description": "SpriteTunk cli: deterministic texture atlas tooling",
   "keywords": [
+    "cocos-creator",
+    "cocos2d",
     "phaser",
+    "phaser4",
+    "pixijs",
     "spritesheet",
     "spritetunk",
     "texture-atlas",

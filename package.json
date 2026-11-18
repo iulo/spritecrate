@@ -27,7 +27,9 @@
     "check:phaser": "node scripts/check-phaser.mjs",
     "cli": "node packages/cli/dist/index.js",
     "example": "node examples/node-basic.mjs",
-    "check:registry": "node scripts/check-consumer.mjs --registry"
+    "check:registry": "node scripts/check-consumer.mjs --registry",
+    "check:pixi": "node scripts/check-pixi.mjs",
+    "check:engines": "pnpm check:phaser && pnpm check:pixi"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
@@ -35,11 +37,14 @@
     "@spritetunk/core": "workspace:*",
     "@spritetunk/node": "workspace:*",
     "@types/node": "26.6.6",
+    "@types/plist": "3.0.5",
     "lerna": "10.1.1",
     "oxfmt": "0.79.0",
     "oxlint": "1.94.0",
     "phaser": "4.2.1",
     "phaser3": "npm:phaser@3.90.0",
+    "pixi.js": "8.23.0",
+    "plist": "5.1.1",
     "publint": "0.3.25",
     "sharp": "0.35.5",
     "tsdown": "0.23.7",

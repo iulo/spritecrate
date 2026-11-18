@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import path from 'node:path';
-import { pack, writeOutput, AtlasError, VERSION } from '@spritetunk/node';
+import { pack, writeOutput, AtlasError, VERSION, EXPORT_FORMATS } from '@spritetunk/node';
 import type { ExportFormat } from '@spritetunk/node';
 import { loadConfig } from './config.js';
 
@@ -12,7 +12,7 @@ Usage: spritetunk pack [glob ...] [options]
   --config <file>   JSON configuration (paths relative to this file)
   --out-dir <dir>   Output directory (default: dist/atlas)
   --name <name>     Atlas basename (default: atlas)
-  --format <name>   json-hash | json-array | phaser4 | phaser3
+  --format <name>   ${EXPORT_FORMATS.join(' | ')}
   --dry-run        Validate and pack without writing files
   --json           Emit one JSON result to stdout
   --help           Show help
@@ -55,7 +55,7 @@ async function main(): Promise<void> {
   const cliInputs = positionals.slice(1);
   const inputs = cliInputs.length ? cliInputs : (config.inputs ?? []);
   const format = values.format ?? config.format ?? 'json-hash';
-  if (!['json-hash', 'json-array', 'phaser4', 'phaser3'].includes(String(format)))
+  if (!EXPORT_FORMATS.includes(format as ExportFormat))
     throw new AtlasError('INVALID_OPTIONS', `Unknown format: ${String(format)}`);
   const atlas = {
     ...config.atlas,

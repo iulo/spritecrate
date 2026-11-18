@@ -74,7 +74,15 @@ export interface OutputFile {
   data: Uint8Array;
 }
 
-export type ExportFormat = 'json-hash' | 'json-array' | 'phaser4' | 'phaser3';
+export const EXPORT_FORMATS = [
+  'json-hash',
+  'json-array',
+  'phaser4',
+  'phaser3',
+  'pixijs',
+  'cocos2d',
+] as const;
+export type ExportFormat = (typeof EXPORT_FORMATS)[number];
 export type Exporter = (pages: readonly AtlasPage[], name: string) => OutputFile[];
 
 export type ErrorCode =

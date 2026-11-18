@@ -65,7 +65,15 @@ Phaser 4 导出不允许旋转。已在 Phaser 4.2.1 的真实 WebGL 渲染中�
 
 单页 PNG 使用 name.png，多页使用 name-0.png、name-1.png。JSON Hash/Array 每页一个同名 JSON；Phaser 4 为一个 name.json，textures 中引用所有页，使用 this.load.multiatlas 加载。
 
-SDK format 还可传入 `(pages, name) => OutputFile[]` 自定义描述文件导出函数。CLI 只接受三个内置格式。自定义输出文件必须是平铺的安全文件名，不能含目录。
+SDK format 还可传入 `(pages, name) => OutputFile[]` 自定义描述文件导出函数。CLI 接受 json-hash、json-array、phaser4、phaser3、pixijs、cocos2d 六个内置格式。自定义输出文件必须是平铺的安全文件名，不能含目录。
+
+## PixiJS 与 Cocos
+
+`format=pixijs` 输出每页 JSON Hash，额外通过 meta.related_multi_packs 关联其他页。单页加载 name.json，多页加载 name-0.json；精灵分布在主 sheet 与 linkedSheets 的 textures 中。支持 rotate=true，已通过 PixiJS 8.23.0 WebGL 逐像素验证。
+
+`format=cocos2d` 每页输出同名 PNG + plist，使用 Cocos2d-x plist 格式 3。包含原图尺寸、裁边中心偏移、纹理位置、未旋转逻辑宽高及旋转标记。支持多页与旋转，已通过独立 plist 解析和像素还原测试；Cocos Creator 编辑器导入和运行时渲染待实测。XML 1.0 不能表示的 frame id 会报 INVALID_INPUT。
+
+集成示例和验证范围见 [Framework integration](frameworks.md)。
 
 ## 输出所有权
 

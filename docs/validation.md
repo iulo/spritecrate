@@ -6,7 +6,7 @@
 
 - 三包 tsdown 构建与 TypeScript 7.0.2 类型检查通过。
 - Oxlint 与 Oxfmt 检查通过。
-- 57 项 Vitest 用例通过：像素还原、裁边、透明占位、顺时针旋转、去重、extrude、间距、尺寸约束、分页、错误、CLI 和输出保护。
+- 68 项 Vitest 用例通过：像素还原、裁边、透明占位、顺时针旋转、去重、extrude、间距、尺寸约束、分页、错误、CLI 和输出保护。
 - 排布性质用例内部执行 20 组固定种子的矩形集，每组 30 个素材；检查每帧还原、无越界、无重叠及间距。
 - 三包 publint / attw 的 ESM 消费检查通过；tarball 携带许可证和第三方声明。
 - 独立临时项目安装三个 tarball，SDK 运行、TS7 声明消费和 CLI bin 执行通过；测试不通过源码 alias 绕过包出口。
@@ -41,3 +41,9 @@ M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M
 ## Phaser 4 验证
 
 已验证 Phaser 4.2.1 和 3.90.0：单页、多页、裁边偏移、逐像素还原。4.2.1 的旋转探针出现 30 个不符像素，因此 phaser4 导出也禁止旋转。正式示例、SDK/CLI 文档与默认测试引擎已改为 Phaser 4。
+
+## PixiJS 与 Cocos 导出验证
+
+- PixiJS 8.23.0：Chromium WebGL 单页、多页关联自动加载、透明裁边、extrude、强制顺时针旋转均逐像素一致（0 差异）。命令：pnpm check:pixi；CI 浏览器任务已纳入该检查。
+- Cocos：plist 格式 3 使用独立 plist 解析器，依据 Cocos2d-x 3.17.2 的字段约定还原原始像素；覆盖不对称裁边、半像素中心偏移、旋转、去重、透明占位、Unicode/XML 字符和多页纹理引用。
+- Cocos Creator 编辑器导入、Cocos 原生渲染与设备行为尚未验证。PixiJS 的 WebGPU 及旧版本尚未验证。

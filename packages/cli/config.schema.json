@@ -20,7 +20,7 @@
       "minLength": 1
     },
     "format": {
-      "enum": ["json-hash", "json-array", "phaser4", "phaser3"]
+      "enum": ["json-hash", "json-array", "phaser4", "phaser3", "pixijs", "cocos2d"]
     },
     "atlas": {
       "type": "object",

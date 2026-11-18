@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { png, sprite } from './helpers.js';
+import { parse } from 'plist';
 import { VERSION } from '@spritetunk/core';
 
 const exec = promisify(execFile);
@@ -80,6 +81,24 @@ describe('CLI subprocess', () => {
       { cwd },
     );
     expect(await readdir(path.join(cwd, 'actual'))).toContain('override.png');
+  });
+
+  it.each(['pixijs', 'cocos2d'])('accepts %s in configuration and CLI flags', async (format) => {
+    const cwd = await setup();
+    await writeFile(
+      path.join(cwd, 'config.json'),
+      JSON.stringify({ inputs: ['a.png'], outDir: 'output', format }),
+    );
+    const { stdout } = await exec(
+      process.execPath,
+      [bin, 'pack', '--config', 'config.json', '--format', format, '--json'],
+      { cwd },
+    );
+    expect(JSON.parse(stdout).ok).toBe(true);
+    const name = `atlas.${format === 'cocos2d' ? 'plist' : 'json'}`;
+    const text = await readFile(path.join(cwd, 'output', name), 'utf8');
+    const data = format === 'cocos2d' ? parse(text) : JSON.parse(text);
+    expect(Object.keys((data as { frames: object }).frames)).toContain('a.png');
   });
 
   it('dry-runs without creating output directories', async () => {

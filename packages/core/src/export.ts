@@ -1,4 +1,5 @@
-import { AtlasError } from './model.js';
+import { exportCocos } from './export-cocos.js';
+import { AtlasError, EXPORT_FORMATS } from './model.js';
 import { VERSION } from './version.js';
 import type { AtlasPage, ExportFormat, Frame, OutputFile } from './model.js';
 
@@ -26,8 +27,9 @@ export function exportAtlas(
   format: ExportFormat,
   name = 'atlas',
 ): OutputFile[] {
-  if (!['json-hash', 'json-array', 'phaser4', 'phaser3'].includes(format))
+  if (!EXPORT_FORMATS.includes(format))
     throw new AtlasError('INVALID_OPTIONS', `Unknown format: ${format}`);
+  if (format === 'cocos2d') return exportCocos(pages);
   if (format === 'phaser4' || format === 'phaser3') {
     if (pages.some((page) => page.frames.some((frame) => frame.rotated))) {
       throw new AtlasError('INVALID_OPTIONS', 'Phaser export requires unrotated frames');
@@ -48,7 +50,7 @@ export function exportAtlas(
   return pages.map((page) =>
     jsonFile(page.image.replace(/\.png$/, '.json'), {
       frames:
-        format === 'json-hash'
+        format === 'json-hash' || format === 'pixijs'
           ? Object.fromEntries(page.frames.map((frame) => [frame.id, frameData(frame)]))
           : page.frames.map((frame) => ({ filename: frame.id, ...frameData(frame) })),
       meta: {
@@ -58,6 +60,13 @@ export function exportAtlas(
         format: 'RGBA8888',
         size: { w: page.width, h: page.height },
         scale: 1,
+        ...(format === 'pixijs' && pages.length > 1
+          ? {
+              related_multi_packs: pages
+                .filter((other) => other !== page)
+                .map((other) => other.image.replace(/\.png$/, '.json')),
+            }
+          : {}),
       },
     }),
   );

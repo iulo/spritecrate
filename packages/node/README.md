@@ -30,3 +30,7 @@ Based in part on [odrick/free-tex-packer-core](https://github.com/odrick/free-te
 ## License
 
 MIT © SpriteTunk contributors.
+
+## Export targets
+
+Built-in formats: `phaser4` (primary), `phaser3`, `pixijs`, `cocos2d`, `json-hash`, and `json-array`. Phaser and PixiJS have WebGL rendering checks; Cocos plist has metadata/pixel reconstruction tests, with editor/runtime validation pending. See the [framework guide](https://github.com/iulo/spritetunk/blob/main/docs/frameworks.md).

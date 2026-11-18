@@ -4,15 +4,34 @@ English | [简体中文](README_CN.md)
 
 A texture atlas packer for JavaScript projects, with a Node.js SDK and CLI.
 
-Combine PNG sprites into texture atlases and export metadata for Phaser 4 and other engines. Use it in your asset pipeline or work directly with RGBA pixels through the standalone core.
+Combine PNG sprites into texture atlases and export metadata for Phaser 4, PixiJS, and Cocos. Use it in your asset pipeline or work directly with RGBA pixels through the standalone core.
+
+<p>
+  <a href="https://phaser.io/"><img src="docs/assets/frameworks/phaser.png" alt="Phaser 4" height="48"></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://pixijs.com/"><img src="docs/assets/frameworks/pixijs.svg" alt="PixiJS" height="48"></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://www.cocos.com/creator"><img src="docs/assets/frameworks/cocos.png" alt="Cocos" height="48"></a>
+</p>
 
 ## Features
 
 - **Atlas packing** — MaxRects, multiple pages, fixed sizes, power-of-two dimensions, and square atlases.
 - **Sprite processing** — transparent trimming, deduplication, optional 90° rotation, and edge extrusion.
-- **Export formats** — JSON Hash, JSON Array, Phaser 4, and custom metadata exporters through the SDK.
+- **Export formats** — Phaser 4/3, PixiJS multipack JSON, Cocos plist, generic JSON Hash/Array, and custom SDK exporters.
 - **Build integration** — CLI, JSON configuration, dry runs, and machine-readable results.
 - **TypeScript support** — type declarations and a core package with no Node.js or DOM dependencies.
+
+## Supported frameworks
+
+| Framework                     | Format    | Atlas rotation | Validation                                                                                  |
+| ----------------------------- | --------- | -------------- | ------------------------------------------------------------------------------------------- |
+| **Phaser 4** — primary target | `phaser4` | Disabled       | 4.2.1 · WebGL pixel comparison                                                              |
+| Phaser 3                      | `phaser3` | Disabled       | 3.90.0 · WebGL pixel comparison                                                             |
+| **PixiJS**                    | `pixijs`  | Supported      | 8.23.0 · WebGL pixel comparison                                                             |
+| **Cocos Creator / Cocos2d-x** | `cocos2d` | Exported       | plist format 3 · metadata and pixel reconstruction tests; editor/runtime validation pending |
+
+All targets support multiple pages and transparent trimming. PixiJS loads related pages automatically; Cocos emits one PNG/plist pair per page. Generic `json-hash` and `json-array` output is also available for custom loaders.
+
+See [framework integration](docs/frameworks.md) for loading examples and validation scope. [Logo sources and licenses](docs/assets/frameworks/README.md).
 
 ## Quick start
 
@@ -112,6 +131,21 @@ this.add.image(100, 100, 'characters', 'assets/hero.png');
 
 Frame names preserve the input file's relative path and extension. Rotation must be disabled for Phaser 4 exports; see the limitations below.
 
+### PixiJS
+
+Export with `--format pixijs`, then load the first JSON page:
+
+```js
+import { Assets, Sprite } from 'pixi.js';
+
+const sheet = await Assets.load('dist/atlas/characters.json');
+const sheets = [sheet, ...sheet.linkedSheets];
+const texture = sheets.map((page) => page.textures['assets/hero.png']).find(Boolean);
+app.stage.addChild(new Sprite(texture));
+```
+
+For multiple pages, load `characters-0.json`; related pages load automatically. Cocos import instructions are in the [framework guide](docs/frameworks.md#cocos-creator--cocos2d-x).
+
 ## Packages
 
 | Package            | Purpose                                                          |
@@ -127,7 +161,7 @@ Phaser 4 is the primary target. The `phaser3` export remains available for compa
 ## Limitations
 
 - Static PNG input and PNG output.
-- The core and generic JSON exporters support rotation. Phaser 4 exports reject it because testing with Phaser 4.2.1 showed incorrect rendering of rotated frames.
+- The core and generic JSON exporters support rotation. Phaser 4/3 exports reject it because testing with Phaser 4.2.1 showed incorrect rendering of rotated frames.
 - No GUI, watch mode, scaling, or migration of upstream GUI project files yet.
 
 Output files are tracked in a manifest. Unrelated files and manually edited files are not overwritten. See the [configuration reference](docs/configuration.md) for output behavior and resource limits.
@@ -135,6 +169,7 @@ Output files are tracked in a manifest. Unrelated files and manually edited file
 ## Documentation
 
 - [Configuration and export formats](docs/configuration.md)
+- [Supported frameworks and loading](docs/frameworks.md)
 - [Architecture](docs/architecture.md)
 - [Upstream sources](docs/upstream.md)
 - [Validation](docs/validation.md)

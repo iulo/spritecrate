@@ -4,15 +4,34 @@
 
 面向 JavaScript 项目的纹理图集打包工具，提供 SDK 和命令行支持。
 
-将多张 PNG 合并为图集，生成可供 Phaser 4 等引擎读取的描述文件，适合接入游戏资源构建流程。
+将多张 PNG 合并为图集，生成 Phaser 4、PixiJS 和 Cocos 的描述文件，适合接入游戏资源构建流程。
+
+<p>
+  <a href="https://phaser.io/"><img src="docs/assets/frameworks/phaser.png" alt="Phaser 4" height="48"></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://pixijs.com/"><img src="docs/assets/frameworks/pixijs.svg" alt="PixiJS" height="48"></a>&nbsp;&nbsp;&nbsp;
+  <a href="https://www.cocos.com/creator"><img src="docs/assets/frameworks/cocos.png" alt="Cocos" height="48"></a>
+</p>
 
 ## 特性
 
 - **图集排布**：MaxRects 算法，支持多页、固定尺寸、2 的幂尺寸和正方形约束。
 - **素材处理**：透明裁边、重复图片合并、可选 90° 旋转和边缘像素扩展。
-- **多种导出**：JSON Hash、JSON Array 和 Phaser 4；SDK 支持自定义描述文件导出。
+- **多种导出**：Phaser 4/3、PixiJS 多页 JSON、Cocos plist、通用 JSON Hash/Array；SDK 支持自定义导出。
 - **构建集成**：命令行、JSON 配置、dry-run 和机器可读的执行结果。
 - **TypeScript 支持**：完整类型声明，可单独使用不依赖 Node.js 或 DOM 的核心包。
+
+## 支持的框架与引擎
+
+| 框架 / 引擎                   | 导出格式  | 图集旋转 | 验证范围                                                          |
+| ----------------------------- | --------- | -------- | ----------------------------------------------------------------- |
+| **Phaser 4**（主要目标）      | `phaser4` | 禁用     | 4.2.1 · WebGL 逐像素对比                                          |
+| Phaser 3                      | `phaser3` | 禁用     | 3.90.0 · WebGL 逐像素对比                                         |
+| **PixiJS**                    | `pixijs`  | 支持     | 8.23.0 · WebGL 逐像素对比                                         |
+| **Cocos Creator / Cocos2d-x** | `cocos2d` | 已导出   | plist 格式 3 · 元数据解析与像素还原测试；编辑器及运行时实测待完成 |
+
+以上导出均支持多页和透明裁边。PixiJS 自动加载关联页；Cocos 每页输出一组同名 PNG/plist。自研加载器还可使用通用 `json-hash`、`json-array`。
+
+加载示例和验证边界见[框架集成文档](docs/frameworks.md)。[图标来源及许可](docs/assets/frameworks/README.md)。
 
 ## 快速开始
 
@@ -112,6 +131,21 @@ this.add.image(100, 100, 'characters', 'assets/hero.png');
 
 精灵名称保留输入文件的相对路径和扩展名。Phaser 4 导出要求关闭旋转，详见下方支持范围。
 
+### PixiJS
+
+通过 `--format pixijs` 导出后，加载第一个 JSON：
+
+```js
+import { Assets, Sprite } from 'pixi.js';
+
+const sheet = await Assets.load('dist/atlas/characters.json');
+const sheets = [sheet, ...sheet.linkedSheets];
+const texture = sheets.map((page) => page.textures['assets/hero.png']).find(Boolean);
+app.stage.addChild(new Sprite(texture));
+```
+
+多页时加载 `characters-0.json`，其余页会自动加载。Cocos 的导入方式见[框架集成文档](docs/frameworks.md#cocos-creator--cocos2d-x)。
+
 ## 包
 
 | 包                 | 用途                                        |
@@ -127,7 +161,7 @@ Phaser 4 是主要目标，保留 `phaser3` 导出选项用于兼容。
 ## 支持范围
 
 - 当前支持静态 PNG 输入和 PNG 输出。
-- 通用 core/JSON 支持旋转；Phaser 4 导出禁止旋转，因为 Phaser 4.2.1 的实测渲染存在采样错误。
+- 通用 core/JSON 支持旋转；Phaser 4/3 导出禁止旋转，因为 Phaser 4.2.1 的实测渲染存在采样错误。
 - 暂不提供 GUI、watch、缩放或上游 GUI 工程文件迁移。
 
 输出目录由清单跟踪，已有的无关文件或被手工修改过的同名文件不会被覆盖。详细行为和资源限制见[配置文档](docs/configuration.md)。
@@ -135,6 +169,7 @@ Phaser 4 是主要目标，保留 `phaser3` 导出选项用于兼容。
 ## 文档
 
 - [配置与输出格式](docs/configuration.md)
+- [框架支持与加载方式](docs/frameworks.md)
 - [架构设计](docs/architecture.md)
 - [上游移植记录](docs/upstream.md)
 - [验证记录](docs/validation.md)
