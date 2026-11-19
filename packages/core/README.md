@@ -27,7 +27,7 @@ Based in part on [odrick/free-tex-packer-core](https://github.com/odrick/free-te
 
 ## License
 
-MIT © SpriteCrate contributors.
+MIT © 2026 [iulo](https://github.com/iulo).
 
 ## Export targets
 

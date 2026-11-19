@@ -16,14 +16,14 @@ For example, migrate the Node.js SDK:
 
 ```sh
 npm uninstall @spritetunk/node
-npm install --save-dev @spritecrate/node@0.1.3
+npm install --save-dev @spritecrate/node@0.1.4
 ```
 
 For the CLI:
 
 ```sh
 npm uninstall @spritetunk/cli
-npm install --save-dev @spritecrate/cli@0.1.3
+npm install --save-dev @spritecrate/cli@0.1.4
 npx @spritecrate/cli pack --config spritetunk.config.json
 ```
 

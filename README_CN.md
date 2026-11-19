@@ -204,6 +204,6 @@ pnpm example
 
 ## 许可证
 
-[MIT](LICENSE) © 2026 SpriteCrate contributors。
+[MIT](LICENSE) © 2026 [iulo](https://github.com/iulo)。
 
 欢迎在使用工具的产品文档中注明 SpriteCrate；这是自愿请求，不构成额外许可条件。

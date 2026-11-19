@@ -1,6 +1,6 @@
 {
   "name": "@spritecrate/node",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "SpriteCrate node: deterministic texture atlas tooling",
   "keywords": [
     "cocos-creator",
@@ -18,6 +18,10 @@
     "url": "https://github.com/iulo/spritecrate/issues"
   },
   "license": "MIT",
+  "author": {
+    "name": "iulo",
+    "url": "https://github.com/iulo"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iulo/spritecrate.git",

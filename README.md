@@ -204,6 +204,6 @@ Adapted portions retain Copyright (c) 2018 Alexander Norinchak and the MIT licen
 
 ## License
 
-[MIT](LICENSE) © 2026 SpriteCrate contributors.
+[MIT](LICENSE) © 2026 [iulo](https://github.com/iulo).
 
 Attribution in your product documentation is appreciated, but is not an additional license requirement.
