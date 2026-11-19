@@ -18,15 +18,16 @@ for (const name of ['core', 'node', 'cli']) {
     ? manifest.version
     : `file:${path.join(root, '.cache', 'packs', `spritecrate-${name}-${manifest.version}.tgz`)}`;
 }
-const run = (args) =>
+const run = (args, capture = false) =>
   execFileSync(pnpm, args, {
     cwd: temporary,
-    stdio: 'inherit',
+    stdio: capture ? 'pipe' : 'inherit',
+    encoding: 'utf8',
     shell: process.platform === 'win32',
   });
 try {
+  const deadline = Date.now() + 10 * 60 * 1000;
   if (useRegistry) {
-    const deadline = Date.now() + 10 * 60 * 1000;
     while (true) {
       const missing = [];
       for (const [name, version] of Object.entries(dependencies)) {
@@ -73,12 +74,37 @@ try {
       2,
     ),
   );
-  run([
+  const installArgs = [
     'install',
     ...(useRegistry ? [] : ['--prefer-offline']),
     '--ignore-scripts',
     '--registry=https://registry.npmjs.org',
-  ]);
+  ];
+  while (true) {
+    try {
+      const output = run(installArgs, useRegistry);
+      if (output) process.stdout.write(output);
+      break;
+    } catch (error) {
+      const diagnostic = `${error.stdout ?? ''}${error.stderr ?? ''}`;
+      // A successful metadata/tarball probe does not guarantee that every registry
+      // cache used by pnpm has received the new package yet.
+      const pendingPackage = Object.keys(dependencies).some((name) =>
+        diagnostic.includes(`${name} is not in the npm registry`),
+      );
+      if (
+        !useRegistry ||
+        !diagnostic.includes('ERR_PNPM_FETCH_404') ||
+        !pendingPackage ||
+        Date.now() >= deadline
+      ) {
+        if (diagnostic) process.stderr.write(diagnostic);
+        throw error;
+      }
+      console.log('Published package installation returned 404; retrying in 10s.');
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
+  }
   await mkdir(path.join(temporary, 'assets'));
   await sharp({ create: { width: 2, height: 3, channels: 4, background: '#ff0000' } })
     .png()
