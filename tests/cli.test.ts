@@ -6,13 +6,13 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { png, sprite } from './helpers.js';
 import { parse } from 'plist';
-import { VERSION } from '@spritetuck/core';
+import { VERSION } from '@spritecrate/core';
 
 const exec = promisify(execFile);
 const bin = path.resolve('packages/cli/dist/index.js');
 const directories: string[] = [];
 async function setup(): Promise<string> {
-  const cwd = await mkdtemp(path.join(tmpdir(), 'spritetuck-cli-'));
+  const cwd = await mkdtemp(path.join(tmpdir(), 'spritecrate-cli-'));
   directories.push(cwd);
   await writeFile(path.join(cwd, 'a.png'), await png(sprite('a', 2, 3)));
   return cwd;

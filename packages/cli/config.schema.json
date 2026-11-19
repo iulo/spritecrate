@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "SpriteTuck configuration",
+  "title": "SpriteCrate configuration",
   "type": "object",
   "additionalProperties": false,
   "properties": {

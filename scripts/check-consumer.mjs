@@ -6,7 +6,7 @@ import sharp from 'sharp';
 
 const root = process.cwd();
 const useRegistry = process.argv.includes('--registry');
-const temporary = await mkdtemp(path.join(tmpdir(), 'spritetuck-consumer-'));
+const temporary = await mkdtemp(path.join(tmpdir(), 'spritecrate-consumer-'));
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const tooling = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const dependencies = {};
@@ -16,7 +16,7 @@ for (const name of ['core', 'node', 'cli']) {
   );
   dependencies[manifest.name] = useRegistry
     ? manifest.version
-    : `file:${path.join(root, '.cache', 'packs', `spritetuck-${name}-${manifest.version}.tgz`)}`;
+    : `file:${path.join(root, '.cache', 'packs', `spritecrate-${name}-${manifest.version}.tgz`)}`;
 }
 const run = (args) =>
   execFileSync(pnpm, args, {
@@ -86,8 +86,8 @@ try {
   await writeFile(
     path.join(temporary, 'consumer.ts'),
     `
-import { pack as packPixels } from '@spritetuck/core';
-import { pack, writeOutput } from '@spritetuck/node';
+import { pack as packPixels } from '@spritecrate/core';
+import { pack, writeOutput } from '@spritecrate/node';
 const core = packPixels({ sprites: [{ id: 'x', width: 1, height: 1, pixels: new Uint8Array([1, 2, 3, 255]) }] });
 if (core.pages.length !== 1) throw new Error('core consumer failed');
 const result = await pack({ inputs: ['assets/*.png'], format: 'phaser4' });
@@ -114,14 +114,14 @@ for (const format of ['pixijs', 'cocos2d'] as const) {
   );
   run(['exec', 'tsc']);
   execFileSync(process.execPath, ['built/consumer.js'], { cwd: temporary, stdio: 'inherit' });
-  run(['exec', 'spritetuck', 'pack', 'assets/*.png', '--out-dir', 'cli-output', '--json']);
+  run(['exec', 'spritecrate', 'pack', 'assets/*.png', '--out-dir', 'cli-output', '--json']);
   const json = JSON.parse(await readFile(path.join(temporary, 'cli-output', 'atlas.json'), 'utf8'));
   if (!json.frames['assets/a.png']) throw new Error('CLI consumer output is missing the frame');
   for (const format of ['pixijs', 'cocos2d']) {
     const directory = `cli-${format}`;
     run([
       'exec',
-      'spritetuck',
+      'spritecrate',
       'pack',
       'assets/*.png',
       '--format',

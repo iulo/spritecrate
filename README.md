@@ -1,4 +1,4 @@
-# SpriteTuck
+# SpriteCrate
 
 English | [简体中文](README_CN.md)
 
@@ -38,14 +38,14 @@ See [framework integration](docs/frameworks.md) for loading examples and validat
 Install the Node.js SDK:
 
 ```bash
-npm install @spritetuck/node
+npm install @spritecrate/node
 ```
 
 Or install the CLI:
 
 ```bash
-npm install --save-dev @spritetuck/cli
-npx spritetuck pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npm install --save-dev @spritecrate/cli
+npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 Requires Node.js 22.18.0 or later. All packages are ESM.
@@ -57,7 +57,7 @@ Requires Node.js 22.18.0 or later. All packages are ESM.
 Pack PNG files into a Phaser 4 atlas:
 
 ```bash
-npx spritetuck pack "assets/**/*.png" \
+npx spritecrate pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -80,17 +80,17 @@ You can also use a JSON configuration file:
 }
 ```
 
-Save it as `spritetuck.config.json` and run:
+Save it as `spritecrate.config.json` and run:
 
 ```bash
-npx spritetuck pack --config spritetuck.config.json
+npx spritecrate pack --config spritecrate.config.json
 ```
 
 Preview the output without writing files, or return a JSON report:
 
 ```bash
-npx spritetuck pack --config spritetuck.config.json --dry-run
-npx spritetuck pack --config spritetuck.config.json --json
+npx spritecrate pack --config spritecrate.config.json --dry-run
+npx spritecrate pack --config spritecrate.config.json --json
 ```
 
 Paths in a configuration file are relative to that file. Paths passed on the command line are relative to the current working directory. See the [configuration reference](docs/configuration.md) for all options.
@@ -98,7 +98,7 @@ Paths in a configuration file are relative to that file. Paths passed on the com
 ### Node.js SDK
 
 ```ts
-import { pack, writeOutput } from '@spritetuck/node';
+import { pack, writeOutput } from '@spritecrate/node';
 
 const result = await pack({
   inputs: ['assets/**/*.png'],
@@ -154,13 +154,13 @@ Set `atlas.packMode: 'fast'` in SDK options or JSON configuration to use the sin
 
 ## Packages
 
-| Package            | Purpose                                                          |
-| ------------------ | ---------------------------------------------------------------- |
-| `@spritetuck/core` | RGBA processing, atlas packing, compositing, and metadata export |
-| `@spritetuck/node` | Node.js SDK with image codecs and file I/O                       |
-| `@spritetuck/cli`  | Command-line tool, available as `spritetuck`                     |
+| Package             | Purpose                                                          |
+| ------------------- | ---------------------------------------------------------------- |
+| `@spritecrate/core` | RGBA processing, atlas packing, compositing, and metadata export |
+| `@spritecrate/node` | Node.js SDK with image codecs and file I/O                       |
+| `@spritecrate/cli`  | Command-line tool, available as `spritecrate`                    |
 
-Use `@spritetuck/core` on its own when you need to work directly with RGBA data.
+Use `@spritecrate/core` on its own when you need to work directly with RGBA data.
 
 Phaser 4 is the primary target. The `phaser3` export remains available for compatibility.
 
@@ -204,6 +204,6 @@ Adapted portions retain Copyright (c) 2018 Alexander Norinchak and the MIT licen
 
 ## License
 
-[MIT](LICENSE) © 2026 SpriteTuck contributors.
+[MIT](LICENSE) © 2026 SpriteCrate contributors.
 
 Attribution in your product documentation is appreciated, but is not an additional license requirement.

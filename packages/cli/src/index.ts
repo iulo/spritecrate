@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import path from 'node:path';
-import { pack, writeOutput, AtlasError, VERSION, EXPORT_FORMATS } from '@spritetuck/node';
-import type { ExportFormat } from '@spritetuck/node';
+import { pack, writeOutput, AtlasError, VERSION, EXPORT_FORMATS } from '@spritecrate/node';
+import type { ExportFormat } from '@spritecrate/node';
 import { loadConfig } from './config.js';
 
-const help = `SpriteTuck ${VERSION} — texture atlas packer
+const help = `SpriteCrate ${VERSION} — texture atlas packer
 
-Usage: spritetuck pack [glob ...] [options]
+Usage: spritecrate pack [glob ...] [options]
 
   --config <file>   JSON configuration (paths relative to this file)
   --out-dir <dir>   Output directory (default: dist/atlas)

@@ -9,7 +9,7 @@ export default defineConfig({
   platform: 'neutral',
   target: 'es2022',
   dts: true,
-  define: { __SPRITETUCK_VERSION__: JSON.stringify(version) },
+  define: { __SPRITECRATE_VERSION__: JSON.stringify(version) },
   fixedExtension: false,
   sourcemap: true,
   clean: true,

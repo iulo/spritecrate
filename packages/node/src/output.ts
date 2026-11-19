@@ -11,14 +11,13 @@ import {
   writeFile,
 } from 'node:fs/promises';
 import path from 'node:path';
-import { AtlasError } from '@spritetuck/core';
-import type { OutputFile } from '@spritetuck/core';
+import { AtlasError } from '@spritecrate/core';
+import type { OutputFile } from '@spritecrate/core';
 
-const MANIFEST = '.spritetuck-manifest.json';
-const LOCK = '.spritetuck.lock';
+const MANIFEST = '.spritecrate-manifest.json';
+const LOCK = '.spritecrate.lock';
 // Coordinate with pre-rename writers and migrate their ownership records safely.
-const LEGACY_MANIFEST = '.spritetunk-manifest.json';
-const LEGACY_LOCK = '.spritetunk.lock';
+const LEGACY_NAMES = ['spritetunk', 'spritetuck', 'spritestow'];
 interface Entry {
   name: string;
   sha256: string;
@@ -33,7 +32,7 @@ function safeName(name: unknown): name is string {
     !/[\\/<>:"|?*]/.test(name) &&
     ![...name].some((char) => char.charCodeAt(0) < 32) &&
     !/[. ]$/.test(name) &&
-    !/^\.sprite(?:tuck|tunk)/i.test(name) &&
+    !/^\.(?:spritecrate|spritetunk|spritetuck|spritestow)/i.test(name) &&
     !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name)
   );
 }
@@ -82,32 +81,35 @@ export async function writeOutput(
   } catch {
     throw new AtlasError(
       'OUTPUT_IO',
-      'Output directory is locked; remove .spritetuck.lock only after confirming no writer is active',
+      'Output directory is locked; remove .spritecrate.lock only after confirming no writer is active',
     );
   }
-  let legacyLock;
+  const legacyLocks: { name: string; handle: Awaited<ReturnType<typeof open>> }[] = [];
   let stage: string | undefined;
   const backups = new Map<string, string>();
   const changed: string[] = [];
   try {
-    try {
-      legacyLock = await open(path.join(directory, LEGACY_LOCK), 'wx');
-    } catch {
-      throw new AtlasError(
-        'OUTPUT_IO',
-        'Output directory is locked by a legacy writer; remove .spritetunk.lock only after confirming no writer is active',
-      );
+    for (const legacyName of LEGACY_NAMES) {
+      const name = `.${legacyName}.lock`;
+      try {
+        legacyLocks.push({ name, handle: await open(path.join(directory, name), 'wx') });
+      } catch {
+        throw new AtlasError(
+          'OUTPUT_IO',
+          `Output directory is locked by a legacy writer; remove ${name} only after confirming no writer is active`,
+        );
+      }
     }
-    const manifestPath = path.join(directory, MANIFEST);
-    const legacyManifestPath = path.join(directory, LEGACY_MANIFEST);
-    const hasManifest = await regularFile(manifestPath);
-    const hasLegacyManifest = await regularFile(legacyManifestPath);
-    if (hasManifest && hasLegacyManifest)
-      throw new AtlasError('OUTPUT_IO', 'Both current and legacy output manifests exist');
+    const existingManifests: string[] = [];
+    for (const name of [MANIFEST, ...LEGACY_NAMES.map((legacy) => `.${legacy}-manifest.json`)])
+      if (await regularFile(path.join(directory, name))) existingManifests.push(name);
+    if (existingManifests.length > 1)
+      throw new AtlasError('OUTPUT_IO', 'Multiple current or legacy output manifests exist');
+    const previousManifest = existingManifests[0];
     let previous: Entry[] = [];
-    if (hasManifest || hasLegacyManifest) {
+    if (previousManifest) {
       const manifest = JSON.parse(
-        await readFile(hasManifest ? manifestPath : legacyManifestPath, 'utf8'),
+        await readFile(path.join(directory, previousManifest), 'utf8'),
       ) as {
         version: unknown;
         files: Entry[];
@@ -133,14 +135,15 @@ export async function writeOutput(
           );
       }
     }
-    const obsolete: string[] = hasLegacyManifest ? [LEGACY_MANIFEST] : [];
+    const obsolete: string[] =
+      previousManifest && previousManifest !== MANIFEST ? [previousManifest] : [];
     for (const entry of previous) {
       if (names.has(entry.name.toLowerCase())) continue;
       const target = path.join(directory, entry.name);
       if ((await regularFile(target)) && digest(await readFile(target)) === entry.sha256)
         obsolete.push(entry.name);
     }
-    stage = await mkdtemp(path.join(directory, '.spritetuck-stage-'));
+    stage = await mkdtemp(path.join(directory, '.spritecrate-stage-'));
     const manifest: OutputFile = {
       name: MANIFEST,
       data: new TextEncoder().encode(
@@ -193,9 +196,9 @@ export async function writeOutput(
       reason: error instanceof Error ? error.message : String(error),
     });
   } finally {
-    if (legacyLock) {
-      await legacyLock.close();
-      await rm(path.join(directory, LEGACY_LOCK), { force: true });
+    for (const { name, handle } of legacyLocks.reverse()) {
+      await handle.close();
+      await rm(path.join(directory, name), { force: true });
     }
     await lock.close();
     await rm(path.join(directory, LOCK), { force: true });

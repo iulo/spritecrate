@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises';
 import sharp from 'sharp';
-import { pack, writeOutput } from '@spritetuck/node';
+import { pack, writeOutput } from '@spritecrate/node';
 
 await mkdir('examples/assets', { recursive: true });
 for (const [name, background] of [

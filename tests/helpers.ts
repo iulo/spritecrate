@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import type { Sprite, AtlasPage, Frame } from '@spritetuck/core';
+import type { Sprite, AtlasPage, Frame } from '@spritecrate/core';
 
 export function sprite(id: string, width: number, height: number, color = 1): Sprite {
   const pixels = new Uint8Array(width * height * 4);

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 import assert from 'node:assert/strict';
-import { pack } from '@spritetuck/node';
+import { pack } from '@spritecrate/node';
 
 const images = [];
 for (const [id, color, width, height, offset] of [

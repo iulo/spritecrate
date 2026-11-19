@@ -1,4 +1,4 @@
-# SpriteTuck
+# SpriteCrate
 
 [English](README.md) | 简体中文
 
@@ -38,14 +38,14 @@
 安装 Node.js SDK：
 
 ```bash
-npm install @spritetuck/node
+npm install @spritecrate/node
 ```
 
 安装命令行工具：
 
 ```bash
-npm install --save-dev @spritetuck/cli
-npx spritetuck pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npm install --save-dev @spritecrate/cli
+npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 需要 Node.js 22.18.0 或更高版本，所有包均为 ESM。
@@ -57,7 +57,7 @@ npx spritetuck pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 将指定目录中的 PNG 打包为 Phaser 4 图集：
 
 ```bash
-npx spritetuck pack "assets/**/*.png" \
+npx spritecrate pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -80,17 +80,17 @@ npx spritetuck pack "assets/**/*.png" \
 }
 ```
 
-保存为 `spritetuck.config.json` 后运行：
+保存为 `spritecrate.config.json` 后运行：
 
 ```bash
-npx spritetuck pack --config spritetuck.config.json
+npx spritecrate pack --config spritecrate.config.json
 ```
 
 预览产物而不写入文件，或获取 JSON 格式的执行结果：
 
 ```bash
-npx spritetuck pack --config spritetuck.config.json --dry-run
-npx spritetuck pack --config spritetuck.config.json --json
+npx spritecrate pack --config spritecrate.config.json --dry-run
+npx spritecrate pack --config spritecrate.config.json --json
 ```
 
 配置文件中的路径相对于配置文件所在目录；命令行中传入的路径相对于当前工作目录。更多选项见[配置文档](docs/configuration.md)。
@@ -98,7 +98,7 @@ npx spritetuck pack --config spritetuck.config.json --json
 ### Node.js SDK
 
 ```ts
-import { pack, writeOutput } from '@spritetuck/node';
+import { pack, writeOutput } from '@spritecrate/node';
 
 const result = await pack({
   inputs: ['assets/**/*.png'],
@@ -154,13 +154,13 @@ SDK 或 JSON 配置中设置 `atlas.packMode: 'fast'`，可使用 0.1.2 的单�
 
 ## 包
 
-| 包                 | 用途                                        |
-| ------------------ | ------------------------------------------- |
-| `@spritetuck/core` | RGBA 像素处理、图集排布、合成和描述文件导出 |
-| `@spritetuck/node` | Node.js SDK，提供图片编解码与文件读写       |
-| `@spritetuck/cli`  | 命令行工具，命令名为 `spritetuck`           |
+| 包                  | 用途                                        |
+| ------------------- | ------------------------------------------- |
+| `@spritecrate/core` | RGBA 像素处理、图集排布、合成和描述文件导出 |
+| `@spritecrate/node` | Node.js SDK，提供图片编解码与文件读写       |
+| `@spritecrate/cli`  | 命令行工具，命令名为 `spritecrate`          |
 
-需要直接操作 RGBA 数据时，可单独安装 `@spritetuck/core`。
+需要直接操作 RGBA 数据时，可单独安装 `@spritecrate/core`。
 
 Phaser 4 是主要目标，保留 `phaser3` 导出选项用于兼容。
 
@@ -204,6 +204,6 @@ pnpm example
 
 ## 许可证
 
-[MIT](LICENSE) © 2026 SpriteTuck contributors。
+[MIT](LICENSE) © 2026 SpriteCrate contributors。
 
-欢迎在使用工具的产品文档中注明 SpriteTuck；这是自愿请求，不构成额外许可条件。
+欢迎在使用工具的产品文档中注明 SpriteCrate；这是自愿请求，不构成额外许可条件。

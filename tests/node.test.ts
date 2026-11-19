@@ -3,12 +3,12 @@ import { mkdtemp, readFile, writeFile, readdir, rm, symlink, rename } from 'node
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { pack, writeOutput } from '@spritetuck/node';
+import { pack, writeOutput } from '@spritecrate/node';
 import { png, sprite } from './helpers.js';
 
 const directories: string[] = [];
 async function directory(): Promise<string> {
-  const dir = await mkdtemp(path.join(tmpdir(), 'spritetuck-test-'));
+  const dir = await mkdtemp(path.join(tmpdir(), 'spritecrate-test-'));
   directories.push(dir);
   return dir;
 }
@@ -108,54 +108,82 @@ describe('output ownership and recovery', () => {
       writeOutput([file('a.png', 'new'), file('b.png', 'new')], { directory: dir }),
     ).rejects.toMatchObject({ code: 'OUTPUT_IO' });
     expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('a');
-    expect(await readdir(dir)).not.toContain('.spritetuck.lock');
+    expect(await readdir(dir)).not.toContain('.spritecrate.lock');
   });
 
-  it('migrates legacy ownership while preserving unrelated and edited stale files', async () => {
-    const dir = await directory();
-    await writeOutput([file('a.png', 'a'), file('stale.png', 'old')], { directory: dir });
-    await rename(
-      path.join(dir, '.spritetuck-manifest.json'),
-      path.join(dir, '.spritetunk-manifest.json'),
-    );
-    await writeFile(path.join(dir, 'stale.png'), 'user edit');
-    await writeFile(path.join(dir, 'README.txt'), 'unrelated');
-    await writeOutput([file('a.png', 'updated')], { directory: dir });
-    expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('updated');
-    expect(await readFile(path.join(dir, 'stale.png'), 'utf8')).toBe('user edit');
-    expect(await readFile(path.join(dir, 'README.txt'), 'utf8')).toBe('unrelated');
-    expect((await readdir(dir)).sort()).toEqual([
-      '.spritetuck-manifest.json',
-      'README.txt',
-      'a.png',
-      'stale.png',
-    ]);
-  });
+  it.each(['spritetunk', 'spritetuck', 'spritestow'])(
+    'migrates legacy ownership while preserving unrelated and edited stale files (%s)',
+    async (legacy) => {
+      const dir = await directory();
+      await writeOutput([file('a.png', 'a'), file('stale.png', 'old')], { directory: dir });
+      await rename(
+        path.join(dir, '.spritecrate-manifest.json'),
+        path.join(dir, `.${legacy}-manifest.json`),
+      );
+      await writeFile(path.join(dir, 'stale.png'), 'user edit');
+      await writeFile(path.join(dir, 'README.txt'), 'unrelated');
+      await writeOutput([file('a.png', 'updated')], { directory: dir });
+      expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('updated');
+      expect(await readFile(path.join(dir, 'stale.png'), 'utf8')).toBe('user edit');
+      expect(await readFile(path.join(dir, 'README.txt'), 'utf8')).toBe('unrelated');
+      expect((await readdir(dir)).sort()).toEqual([
+        '.spritecrate-manifest.json',
+        'README.txt',
+        'a.png',
+        'stale.png',
+      ]);
+    },
+  );
 
-  it('refuses edited legacy outputs without migrating their ownership', async () => {
+  it.each(['spritetunk', 'spritetuck', 'spritestow'])(
+    'refuses edited legacy outputs without migrating their ownership (%s)',
+    async (legacy) => {
+      const dir = await directory();
+      await writeOutput([file('a.png', 'a')], { directory: dir });
+      await rename(
+        path.join(dir, '.spritecrate-manifest.json'),
+        path.join(dir, `.${legacy}-manifest.json`),
+      );
+      await writeFile(path.join(dir, 'a.png'), 'edit');
+      await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
+        code: 'OUTPUT_IO',
+      });
+      expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('edit');
+      expect(await readdir(dir)).toContain(`.${legacy}-manifest.json`);
+      expect(await readdir(dir)).not.toContain('.spritecrate-manifest.json');
+    },
+  );
+
+  it.each(['spritetunk', 'spritetuck', 'spritestow'])(
+    'respects legacy writer locks without deleting another writer lock (%s)',
+    async (legacy) => {
+      const dir = await directory();
+      await writeFile(path.join(dir, `.${legacy}.lock`), 'active');
+      await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
+        code: 'OUTPUT_IO',
+      });
+      expect(await readFile(path.join(dir, `.${legacy}.lock`), 'utf8')).toBe('active');
+      expect(await readdir(dir)).not.toContain('.spritecrate.lock');
+    },
+  );
+
+  it.each([
+    ['spritecrate', 'spritetunk'],
+    ['spritetunk', 'spritetuck'],
+  ])('refuses conflicting manifests for %s and %s', async (first, second) => {
     const dir = await directory();
     await writeOutput([file('a.png', 'a')], { directory: dir });
-    await rename(
-      path.join(dir, '.spritetuck-manifest.json'),
-      path.join(dir, '.spritetunk-manifest.json'),
+    const current = path.join(dir, '.spritecrate-manifest.json');
+    if (first !== 'spritecrate') await rename(current, path.join(dir, `.${first}-manifest.json`));
+    await writeFile(
+      path.join(dir, `.${second}-manifest.json`),
+      await readFile(path.join(dir, `.${first}-manifest.json`)),
     );
-    await writeFile(path.join(dir, 'a.png'), 'edit');
     await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
       code: 'OUTPUT_IO',
     });
-    expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('edit');
-    expect(await readdir(dir)).toContain('.spritetunk-manifest.json');
-    expect(await readdir(dir)).not.toContain('.spritetuck-manifest.json');
-  });
-
-  it('respects legacy writer locks without deleting another writer lock', async () => {
-    const dir = await directory();
-    await writeFile(path.join(dir, '.spritetunk.lock'), 'active');
-    await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
-      code: 'OUTPUT_IO',
-    });
-    expect(await readFile(path.join(dir, '.spritetunk.lock'), 'utf8')).toBe('active');
-    expect(await readdir(dir)).not.toContain('.spritetuck.lock');
+    expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('a');
+    expect((await readdir(dir)).filter((name) => name.endsWith('.lock'))).toEqual([]);
   });
 
   it.each([
@@ -163,10 +191,14 @@ describe('output ownership and recovery', () => {
     '/absolute.png',
     'sub/file.png',
     'sub\\file.png',
-    '.spritetuck.lock',
-    '.spritetuck-manifest.json',
+    '.spritecrate.lock',
+    '.spritecrate-manifest.json',
     '.spritetunk.lock',
     '.spritetunk-manifest.json',
+    '.spritetuck.lock',
+    '.spritetuck-manifest.json',
+    '.spritestow.lock',
+    '.spritestow-manifest.json',
   ])('rejects unsafe name %s', async (name) => {
     await expect(
       writeOutput([file(name, 'x')], { directory: await directory() }),
@@ -182,7 +214,7 @@ describe('output ownership and recovery', () => {
       code: 'OUTPUT_IO',
     });
     expect(await readFile(outside, 'utf8')).toBe('untouched');
-    await writeFile(path.join(dir, '.spritetuck.lock'), '');
+    await writeFile(path.join(dir, '.spritecrate.lock'), '');
     await expect(writeOutput([file('b.png', 'x')], { directory: dir })).rejects.toMatchObject({
       code: 'OUTPUT_IO',
     });

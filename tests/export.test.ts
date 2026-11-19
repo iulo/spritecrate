@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parse } from 'plist';
-import { pack, exportAtlas } from '@spritetuck/core';
-import type { AtlasPage, Frame } from '@spritetuck/core';
+import { pack, exportAtlas } from '@spritecrate/core';
+import type { AtlasPage, Frame } from '@spritecrate/core';
 import { restore, sprite } from './helpers.js';
 
 interface CocosFrame {
@@ -21,7 +21,7 @@ const numbers = (value: string): number[] =>
   [...value.matchAll(/-?\d+(?:\.\d+)?/g)].map((match) => Number(match[0]));
 
 // Reconstruct a frame using the format-3 loader's logical size and center-offset
-// conventions, independently of SpriteTuck's metadata representation.
+// conventions, independently of SpriteCrate's metadata representation.
 function cocosFrame(id: string, data: CocosFrame): Frame {
   const [x, y, w, h] = numbers(data.textureRect) as [number, number, number, number];
   const [sw, sh] = numbers(data.spriteSourceSize) as [number, number];

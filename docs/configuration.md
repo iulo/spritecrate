@@ -3,16 +3,16 @@
 ## CLI
 
 ```bash
-spritetuck pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser4
-spritetuck pack --config spritetuck.config.json --json
-spritetuck pack --config spritetuck.config.json --dry-run
+spritecrate pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser4
+spritecrate pack --config spritecrate.config.json --json
+spritecrate pack --config spritecrate.config.json --dry-run
 ```
 
 JSON 配置示例：
 
 ```json
 {
-  "$schema": "./node_modules/@spritetuck/cli/config.schema.json",
+  "$schema": "./node_modules/@spritecrate/cli/config.schema.json",
   "inputs": ["assets/**/*.png"],
   "outDir": "dist/atlas",
   "format": "phaser4",
