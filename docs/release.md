@@ -19,6 +19,14 @@ CI 检查三种操作系统和三个 Node 版本，另外验证 Phaser 4/3 和 P
 
 发布过程按依赖关系执行 core → node → cli。若部分包成功后失败，不修改已经发布的同版本内容；修复原因后重新运行 from-package，发布其余尚不存在的版本。
 
+### Sigstore 透明日志冲突
+
+Lerna 的发布依赖 `sigstore@5.0.1` 默认禁止回读已存在的 Rekor 条目。在本次 GitHub Actions 发布中，条目已经写入，客户端仍以 `TLOG_CREATE_ENTRY_ERROR` / HTTP 409 退出，重复运行也会出现。
+
+`patches/sigstore@5.0.1.patch` 仅修正开发侧发布依赖：对带 Location 的 409 使用客户端已有的回读能力，并在返回 attestation 前完整验证生成的 Sigstore bundle。没有可回读位置、其他 HTTP 错误或签名/透明日志证明不合法时仍失败。该依赖不会进入三个 SDK/CLI 发布包。
+
+`tests/release-provenance.test.ts` 使用 Lerna 实际解析到的 Sigstore 配置，回归 409 回读、缺失 Location 和服务器错误。升级发布依赖时需重新评估补丁，不能绕过 provenance 或验证步骤。
+
 ## 首次初始化
 
 npm 的可信发布设置要求包已经存在。首次引导由具备组织权限的维护者登录 npm，按依赖顺序发布经过检查的 tarball，并完成 npm 要求的 2FA 授权。

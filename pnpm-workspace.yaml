@@ -1,13 +1,15 @@
 packages:
   - packages/*
 
-onlyBuiltDependencies:
-  - sharp
-
 # Nx is only a transitive Lerna dependency; no Nx task runner is used.
 ignoredBuiltDependencies:
   - nx
 
+onlyBuiltDependencies:
+  - sharp
+
 # Satisfies Lerna's git-client peer range; remove when upstream resolves it.
 overrides:
   conventional-commits-parser: 7.1.4
+patchedDependencies:
+  sigstore@5.0.1: patches/sigstore@5.0.1.patch

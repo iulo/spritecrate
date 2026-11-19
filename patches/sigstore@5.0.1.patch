@@ -1,0 +1,29 @@
+diff --git a/dist/config.js b/dist/config.js
+index 373149fe22fb750faeefba5d20a0e432bb91df14..3e3173d504330cd385d84637e12a95eea9731e52 100644
+--- a/dist/config.js
++++ b/dist/config.js
+@@ -102,7 +102,7 @@ function initWitnesses(options) {
+         witnesses.push(new sign_1.RekorWitness({
+             rekorBaseURL: options.rekorURL,
+             entryType: options.legacyCompatibility ? 'intoto' : 'dsse',
+-            fetchOnConflict: false,
++            fetchOnConflict: true,
+             retry: options.retry ?? exports.DEFAULT_RETRY,
+             timeout: options.timeout ?? exports.DEFAULT_TIMEOUT,
+         }));
+diff --git a/dist/sigstore.js b/dist/sigstore.js
+index f7d79ed880588a3b71d38ba55bc351553fdd3cf5..0e7b69945945d5fe6bddcb86f039413bf5d6d20a 100644
+--- a/dist/sigstore.js
++++ b/dist/sigstore.js
+@@ -68,7 +68,10 @@ async function attest(payload, payloadType,
+ options = {}) {
+     const bundler = config.createBundleBuilder('dsseEnvelope', options);
+     const bundle = await bundler.create({ data: payload, type: payloadType });
+-    return (0, bundle_1.bundleToJSON)(bundle);
++    const result = (0, bundle_1.bundleToJSON)(bundle);
++    // A recovered transparency-log entry must verify against the generated envelope.
++    await verify(result, options);
++    return result;
+ }
+ async function verify(bundle, dataOrOptions, options) {
+     let data;

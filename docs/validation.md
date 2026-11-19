@@ -75,5 +75,6 @@ M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M
 
 - 本次统一根目录和三个包的版权署名为 `iulo`，补齐 author 元数据；上游 Alexander Norinchak 的版权和 MIT 条款继续保留。
 - 三个包包含修正后的 scoped CLI 文档。打包逻辑与 0.1.3 相同。
-- 本机 `pnpm check` 通过：104 项测试、构建、类型、Lint、格式、包内容和独立 tarball 消费均通过。Phaser 4/3 与 PixiJS 的浏览器像素对比通过；Phaser 旋转负向探针保持预期差异。
-- 本版本将通过 GitHub Actions 实际发布；完成后记录 Release、公开安装和 provenance 核验结果。
+- 本机 `pnpm check` 通过：107 项测试、构建、类型、Lint、格式、包内容和独立 tarball 消费均通过。Phaser 4/3 与 PixiJS 的浏览器像素对比通过；Phaser 旋转负向探针保持预期差异。
+- 前两次实际发布在 Sigstore 创建透明日志条目时出现 409，Rekor 中可查询到对应条目，registry 尚无 0.1.4。已对发布依赖增加冲突回读，并在生成 attestation 后完整验证 bundle；3 项回归覆盖带位置的 409、无位置的 409 和服务器错误。
+- 本版本将通过修复后的 GitHub Actions 实际发布；完成后记录 Release、公开安装和 provenance 核验结果。
