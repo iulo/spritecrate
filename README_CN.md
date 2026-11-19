@@ -14,7 +14,7 @@
 
 ## 特性
 
-- **图集排布**：MaxRects 算法，支持多页、固定尺寸、2 的幂尺寸和正方形约束。
+- **图集排布**：五种 MaxRects 策略及自动尺寸搜索，支持多页、固定尺寸、2 的幂尺寸和正方形约束。
 - **素材处理**：透明裁边、重复图片合并、可选 90° 旋转和边缘像素扩展。
 - **多种导出**：Phaser 4/3、PixiJS 多页 JSON、Cocos plist、通用 JSON Hash/Array；SDK 支持自定义导出。
 - **构建集成**：命令行、JSON 配置、dry-run 和机器可读的执行结果。
@@ -145,6 +145,12 @@ app.stage.addChild(new Sprite(texture));
 ```
 
 多页时加载 `characters-0.json`，其余页会自动加载。Cocos 的导入方式见[框架集成文档](docs/frameworks.md#cocos-creator--cocos2d-x)。
+
+### 排布质量
+
+默认 `atlas.packMode: 'best'` 会尝试多种 MaxRects 策略及候选画布尺寸，确定排布后仅合成一次像素。结果的页数与总面积均不大于 `fast` 基线。搜索使用确定的工作量预算，不保证全局最优。
+
+SDK 或 JSON 配置中设置 `atlas.packMode: 'fast'`，可使用 0.1.2 的单次 BSSF 排布。固定尺寸输出仍保留指定尺寸。详见[排布行为与基准](docs/packing.md)。
 
 ## 包
 

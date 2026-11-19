@@ -1,0 +1,64 @@
+{
+  "version": "0.1.2",
+  "node": "v26.13.1",
+  "platform": "darwin-arm64",
+  "cpu": "Apple M4",
+  "fixture": "self-generated seeded dimensions; RGBA core only; 1 warmup + 3 measurements; peak RSS is cumulative process high-water mark",
+  "cases": [
+    {
+      "count": 10,
+      "packMode": "fast",
+      "totalPixels": 21000,
+      "medianMs": 1.201792000000001,
+      "pages": 1,
+      "occupancy": 0.5017619047619047,
+      "processPeakRssKiB": 47392
+    },
+    {
+      "count": 10,
+      "packMode": "best",
+      "totalPixels": 13552,
+      "medianMs": 7.5660000000000025,
+      "pages": 1,
+      "occupancy": 0.7775236127508854,
+      "processPeakRssKiB": 56928
+    },
+    {
+      "count": 100,
+      "packMode": "fast",
+      "totalPixels": 168960,
+      "medianMs": 7.027582999999993,
+      "pages": 1,
+      "occupancy": 0.6978397253787879,
+      "processPeakRssKiB": 60784
+    },
+    {
+      "count": 100,
+      "packMode": "best",
+      "totalPixels": 166912,
+      "medianMs": 75.915416,
+      "pages": 1,
+      "occupancy": 0.7064021759969326,
+      "processPeakRssKiB": 86448
+    },
+    {
+      "count": 500,
+      "packMode": "fast",
+      "totalPixels": 786432,
+      "medianMs": 55.87270799999999,
+      "pages": 3,
+      "occupancy": 0.7549603780110677,
+      "processPeakRssKiB": 103136
+    },
+    {
+      "count": 500,
+      "packMode": "best",
+      "totalPixels": 786432,
+      "medianMs": 124.98199999999997,
+      "pages": 3,
+      "occupancy": 0.7549603780110677,
+      "processPeakRssKiB": 128256
+    }
+  ],
+  "implementation": "multi-heuristic-size-search"
+}

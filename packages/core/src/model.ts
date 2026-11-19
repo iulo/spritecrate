@@ -22,6 +22,8 @@ export interface AtlasOptions {
   name?: string;
   maxWidth?: number;
   maxHeight?: number;
+  /** best searches sizes and heuristics; fast preserves the single-pass BSSF layout. */
+  packMode?: 'fast' | 'best';
   fixedSize?: boolean;
   powerOfTwo?: boolean;
   square?: boolean;

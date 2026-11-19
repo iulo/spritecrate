@@ -14,7 +14,7 @@ Combine PNG sprites into texture atlases and export metadata for Phaser 4, PixiJ
 
 ## Features
 
-- **Atlas packing** — MaxRects, multiple pages, fixed sizes, power-of-two dimensions, and square atlases.
+- **Atlas packing** — five MaxRects strategies, automatic size search, multiple pages, fixed sizes, power-of-two dimensions, and square atlases.
 - **Sprite processing** — transparent trimming, deduplication, optional 90° rotation, and edge extrusion.
 - **Export formats** — Phaser 4/3, PixiJS multipack JSON, Cocos plist, generic JSON Hash/Array, and custom SDK exporters.
 - **Build integration** — CLI, JSON configuration, dry runs, and machine-readable results.
@@ -145,6 +145,12 @@ app.stage.addChild(new Sprite(texture));
 ```
 
 For multiple pages, load `characters-0.json`; related pages load automatically. Cocos import instructions are in the [framework guide](docs/frameworks.md#cocos-creator--cocos2d-x).
+
+### Packing quality
+
+By default, `atlas.packMode: 'best'` tries multiple MaxRects strategies and candidate canvas sizes, then composites pixels once. It keeps page count and total area no larger than the `fast` baseline. Search has a deterministic work budget and does not guarantee a global optimum.
+
+Set `atlas.packMode: 'fast'` in SDK options or JSON configuration to use the single-pass BSSF layout from 0.1.2. Fixed-size output retains its specified dimensions. See [packing behavior and benchmarks](docs/packing.md).
 
 ## Packages
 

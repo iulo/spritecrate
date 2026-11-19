@@ -101,6 +101,37 @@ describe('CLI subprocess', () => {
     expect(Object.keys((data as { frames: object }).frames)).toContain('a.png');
   });
 
+  it('uses packMode from JSON configuration to choose compact or legacy packing', async () => {
+    const cwd = await setup();
+    for (const [index, [w, h]] of [
+      [5, 7],
+      [8, 3],
+      [4, 9],
+      [7, 6],
+    ].entries()) {
+      await writeFile(
+        path.join(cwd, `frame-${index}.png`),
+        await png(sprite(`frame-${index}`, w!, h!, index + 1)),
+      );
+    }
+    const areas: number[] = [];
+    for (const packMode of ['fast', 'best']) {
+      await writeFile(
+        path.join(cwd, 'config.json'),
+        JSON.stringify({
+          inputs: ['frame-*.png'],
+          outDir: packMode,
+          atlas: { maxWidth: 32, maxHeight: 32, extrude: 0, padding: 0, packMode },
+        }),
+      );
+      await exec(process.execPath, [bin, 'pack', '--config', 'config.json'], { cwd });
+      const atlas = JSON.parse(await readFile(path.join(cwd, packMode, 'atlas.json'), 'utf8'));
+      expect(Object.keys(atlas.frames)).toHaveLength(4);
+      areas.push(atlas.meta.size.w * atlas.meta.size.h);
+    }
+    expect(areas[1]).toBeLessThan(areas[0]!);
+  });
+
   it('dry-runs without creating output directories', async () => {
     const cwd = await setup();
     const { stdout } = await exec(

@@ -12,28 +12,33 @@ for (const count of [10, 100, 500]) {
       pixels.set([i % 256, (i >> 8) % 256, p % 256, 255], p);
     return { id: `sprite-${i}`, width, height, pixels };
   });
-  const options = { maxWidth: 512, maxHeight: 512, rotate: true, deduplicate: false };
-  pack({ sprites, options });
-  const durations = [];
-  let result;
-  for (let iteration = 0; iteration < 3; iteration++) {
-    const start = performance.now();
-    result = pack({ sprites, options });
-    durations.push(performance.now() - start);
+  for (const packMode of ['fast', 'best']) {
+    const options = { packMode, maxWidth: 512, maxHeight: 512, rotate: true, deduplicate: false };
+    pack({ sprites, options });
+    const durations = [];
+    let result;
+    for (let iteration = 0; iteration < 3; iteration++) {
+      const start = performance.now();
+      result = pack({ sprites, options });
+      durations.push(performance.now() - start);
+    }
+    durations.sort((a, b) => a - b);
+    cases.push({
+      count,
+      packMode,
+      totalPixels: result.pages.reduce((sum, page) => sum + page.width * page.height, 0),
+      medianMs: durations[1],
+      pages: result.report.pageCount,
+      occupancy: result.report.occupancy,
+      processPeakRssKiB: process.resourceUsage().maxRSS,
+    });
   }
-  durations.sort((a, b) => a - b);
-  cases.push({
-    count,
-    medianMs: durations[1],
-    pages: result.report.pageCount,
-    occupancy: result.report.occupancy,
-    processPeakRssKiB: process.resourceUsage().maxRSS,
-  });
 }
 console.log(
   JSON.stringify(
     {
       version: VERSION,
+      implementation: 'multi-heuristic-size-search',
       node: process.version,
       platform: `${process.platform}-${process.arch}`,
       cpu: os.cpus()[0]?.model,

@@ -40,6 +40,7 @@ JSON 配置示例：
 | ------------------ | --------- | ------------------------------------------------- |
 | name               | atlas     | 可跨平台使用的 ASCII 文件名主体，不含路径         |
 | maxWidth/maxHeight | 2048/2048 | 每页上限；整数 1–8192                             |
+| packMode           | best      | best 多策略及尺寸搜索；fast 使用旧版单次 BSSF     |
 | fixedSize          | false     | 固定为上限尺寸                                    |
 | powerOfTwo         | false     | 两个维度分别为 2 的幂，上限向下取可用幂           |
 | square             | false     | 正方形；可用最大边取两个上限的较小值              |
@@ -54,6 +55,14 @@ JSON 配置示例：
 fixedSize + square 要求两个上限相等；fixedSize + powerOfTwo 要求固定尺寸本身为幂。不能容纳的精灵抛 IMAGE_TOO_LARGE，不会丢失。
 
 完全透明素材采用 1×1 透明占位，保留源尺寸。裁边关闭时不进行此收缩。预处理不修改输入数据。
+
+## 排布质量
+
+默认 `packMode=best`；也可显式选择 `fast`。best 包含短边、长边、面积、Bottom Left 和 Contact Point 五种 MaxRects 策略，并在非固定尺寸时搜索候选宽高。保留 fast 基线，不接受页数或总面积比有效基线更大的候选结果；候选之间优先减少页数，再减少总面积。同分时保留先找到的方案。
+
+fixedSize=true 时只选择放置策略，不搜索其他尺寸；POT 和正方形约束也参与搜索及结果比较。先选几何排布，再合成像素，不为每次候选尝试编码 PNG。
+
+best 使用确定的候选评分工作量预算；数量较多时可能耗尽预算并退回基线，不能将它理解为穷举或数学最优。fast 的坐标与旧版一致。详见 [Packing](packing.md)。
 
 ## 模型与导出
 

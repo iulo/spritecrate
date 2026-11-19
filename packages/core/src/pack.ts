@@ -1,71 +1,18 @@
 import { AtlasError, compareIds, MAX_IMAGE_PIXELS, MAX_TOTAL_PIXELS } from './model.js';
 import type { AtlasOptions, AtlasPage, PackResult, Sprite } from './model.js';
-import { ceilPowerOfTwo, floorPowerOfTwo, resolveOptions } from './options.js';
-import { MaxRects, comparePlacement } from './maxrects.js';
-import type { Placement } from './maxrects.js';
+import { resolveOptions } from './options.js';
+import { planLayout } from './layout.js';
 import { prepare } from './preprocess.js';
 import type { Prepared } from './preprocess.js';
-
-interface Placed {
-  item: Prepared;
-  placement: Placement;
-}
 
 export function pack(request: { sprites: readonly Sprite[]; options?: AtlasOptions }): PackResult {
   const options = resolveOptions(request.options);
   const items = prepare(request.sprites, options);
-  const remaining = [...items];
   const pages: AtlasPage[] = [];
-  let capW = options.maxWidth,
-    capH = options.maxHeight;
-  if (options.powerOfTwo) {
-    capW = floorPowerOfTwo(capW);
-    capH = floorPowerOfTwo(capH);
-  }
-  if (options.square) capW = capH = Math.min(capW, capH);
-  const { border, padding, extrude } = options;
+  const { border, extrude } = options;
   let outputPixels = 0;
   let contentArea = 0;
-  while (remaining.length) {
-    const bin = new MaxRects(capW - border * 2 + padding, capH - border * 2 + padding);
-    const placed: Placed[] = [];
-    while (remaining.length) {
-      let best: { item: Prepared; placement: Placement; index: number } | undefined;
-      for (const [index, item] of remaining.entries()) {
-        const placement = bin.score(
-          item.width + 2 * extrude + padding,
-          item.height + 2 * extrude + padding,
-          options.rotate,
-        );
-        if (placement && (!best || comparePlacement(placement, best.placement) < 0))
-          best = { item, placement, index };
-      }
-      if (!best) break;
-      bin.place(best.placement);
-      placed.push(best);
-      remaining.splice(best.index, 1);
-    }
-    if (!placed.length) {
-      const item = remaining[0]!;
-      throw new AtlasError('IMAGE_TOO_LARGE', `Sprite cannot fit atlas: ${item.aliases[0]!.id}`, {
-        id: item.aliases[0]!.id,
-        width: item.width,
-        height: item.height,
-        maxWidth: capW,
-        maxHeight: capH,
-      });
-    }
-    let width = options.fixedSize
-      ? capW
-      : Math.max(...placed.map(({ placement: p }) => p.x + p.w - padding)) + border * 2;
-    let height = options.fixedSize
-      ? capH
-      : Math.max(...placed.map(({ placement: p }) => p.y + p.h - padding)) + border * 2;
-    if (options.powerOfTwo) {
-      width = ceilPowerOfTwo(width);
-      height = ceilPowerOfTwo(height);
-    }
-    if (options.square) width = height = Math.max(width, height);
+  for (const { width, height, placed } of planLayout(items, options)) {
     outputPixels += width * height;
     if (width * height > MAX_IMAGE_PIXELS || outputPixels > MAX_TOTAL_PIXELS)
       throw new AtlasError('LIMIT_EXCEEDED', 'Output pixel limit exceeded', { width, height });

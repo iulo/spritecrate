@@ -5,6 +5,7 @@ const defaults: ResolvedOptions = {
   name: 'atlas',
   maxWidth: 2048,
   maxHeight: 2048,
+  packMode: 'best',
   fixedSize: false,
   powerOfTwo: false,
   square: false,
@@ -26,6 +27,8 @@ export function resolveOptions(options: AtlasOptions = {}): ResolvedOptions {
       throw new AtlasError('INVALID_OPTIONS', `Unknown atlas option: ${key}`);
   }
   const resolved = { ...defaults, ...options };
+  if (resolved.packMode !== 'fast' && resolved.packMode !== 'best')
+    throw new AtlasError('INVALID_OPTIONS', 'packMode must be fast or best');
   for (const key of [
     'maxWidth',
     'maxHeight',
