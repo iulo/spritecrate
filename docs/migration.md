@@ -1,6 +1,6 @@
 # SpriteTunk → SpriteCrate
 
-The project is now named **SpriteCrate**. Version 0.1.3 continues the existing version sequence under the new npm scope. Previously published packages remain available under their original names. The interim SpriteTuck and SpriteStow names were not released to npm.
+The project is now named **SpriteCrate**. Version 0.1.3 continues the existing version sequence under the new npm scope. All versions of the original `@spritetunk/core`, `@spritetunk/node`, and `@spritetunk/cli` packages were unpublished on 2026-11-19. Update dependencies and lockfiles to the new scope before reinstalling. The interim SpriteTuck and SpriteStow names were not released to npm.
 
 | Before                       | After                         |
 | ---------------------------- | ----------------------------- |
@@ -39,7 +39,7 @@ git remote set-url origin https://github.com/iulo/spritecrate.git
 
 ## 中文说明
 
-项目由 SpriteTunk 更名为 **SpriteCrate**。三个 npm 包改用 `@spritecrate` scope，命令改为 `spritecrate`，版本沿用到 0.1.3。旧包继续保留；更新依赖、import、脚本及锁文件即可，SDK 接口和导出格式名称不变。通过 `--config` 显式指定的配置文件可以保留原文件名。
+项目由 SpriteTunk 更名为 **SpriteCrate**。三个 npm 包改用 `@spritecrate` scope，命令改为 `spritecrate`，版本沿用到 0.1.3。旧 scope 的三个包已于 2026-11-19 撤销全部版本，重新安装前需要更新依赖和锁文件；同时更新 import 和脚本。SDK 接口和导出格式名称不变。通过 `--config` 显式指定的配置文件可以保留原文件名。
 
 此前短暂使用的 SpriteTuck、SpriteStow 名称没有发布到 npm；本地开发生成的对应输出清单也支持迁移。
 
