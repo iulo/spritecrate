@@ -3,9 +3,9 @@
 ## CLI
 
 ```bash
-spritecrate pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser4
-spritecrate pack --config spritecrate.config.json --json
-spritecrate pack --config spritecrate.config.json --dry-run
+npx @spritecrate/cli pack 'assets/**/*.png' --out-dir dist/atlas --name game --format phaser4
+npx @spritecrate/cli pack --config spritecrate.config.json --json
+npx @spritecrate/cli pack --config spritecrate.config.json --dry-run
 ```
 
 JSON 配置示例：

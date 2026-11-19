@@ -4,13 +4,13 @@ Pack PNG sprites into texture atlases and JSON metadata from the command line.
 
 ```bash
 npm install --save-dev @spritecrate/cli
-npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npx @spritecrate/cli pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 ```bash
-npx spritecrate pack --config spritecrate.config.json
-npx spritecrate pack --config spritecrate.config.json --dry-run --json
-npx spritecrate --help
+npx @spritecrate/cli pack --config spritecrate.config.json
+npx @spritecrate/cli pack --config spritecrate.config.json --dry-run --json
+npx @spritecrate/cli --help
 ```
 
 JSON configuration supports Schema completion. See the configuration reference for paths and export formats.

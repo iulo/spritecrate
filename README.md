@@ -41,11 +41,11 @@ Install the Node.js SDK:
 npm install @spritecrate/node
 ```
 
-Or install the CLI:
+Install the CLI (`@spritecrate/cli`; executable: `spritecrate`):
 
 ```bash
 npm install --save-dev @spritecrate/cli
-npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npx @spritecrate/cli pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 Requires Node.js 22.18.0 or later. All packages are ESM.
@@ -57,7 +57,7 @@ Requires Node.js 22.18.0 or later. All packages are ESM.
 Pack PNG files into a Phaser 4 atlas:
 
 ```bash
-npx spritecrate pack "assets/**/*.png" \
+npx @spritecrate/cli pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -83,14 +83,14 @@ You can also use a JSON configuration file:
 Save it as `spritecrate.config.json` and run:
 
 ```bash
-npx spritecrate pack --config spritecrate.config.json
+npx @spritecrate/cli pack --config spritecrate.config.json
 ```
 
 Preview the output without writing files, or return a JSON report:
 
 ```bash
-npx spritecrate pack --config spritecrate.config.json --dry-run
-npx spritecrate pack --config spritecrate.config.json --json
+npx @spritecrate/cli pack --config spritecrate.config.json --dry-run
+npx @spritecrate/cli pack --config spritecrate.config.json --json
 ```
 
 Paths in a configuration file are relative to that file. Paths passed on the command line are relative to the current working directory. See the [configuration reference](docs/configuration.md) for all options.

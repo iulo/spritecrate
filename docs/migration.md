@@ -24,7 +24,7 @@ For the CLI:
 ```sh
 npm uninstall @spritetunk/cli
 npm install --save-dev @spritecrate/cli@0.1.3
-npx spritecrate pack --config spritetunk.config.json
+npx @spritecrate/cli pack --config spritetunk.config.json
 ```
 
 Version 0.1.3 also includes improved MaxRects packing and automatic canvas-size search. Repacking may change coordinates and PNG dimensions; regenerate PNGs and descriptors together. Use `atlas.packMode: 'fast'` to retain the previous single-pass layout strategy.

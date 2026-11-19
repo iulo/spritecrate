@@ -41,11 +41,11 @@
 npm install @spritecrate/node
 ```
 
-安装命令行工具：
+安装命令行工具（npm 包名为 `@spritecrate/cli`，可执行命令名为 `spritecrate`）：
 
 ```bash
 npm install --save-dev @spritecrate/cli
-npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npx @spritecrate/cli pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 需要 Node.js 22.18.0 或更高版本，所有包均为 ESM。
@@ -57,7 +57,7 @@ npx spritecrate pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 将指定目录中的 PNG 打包为 Phaser 4 图集：
 
 ```bash
-npx spritecrate pack "assets/**/*.png" \
+npx @spritecrate/cli pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -83,14 +83,14 @@ npx spritecrate pack "assets/**/*.png" \
 保存为 `spritecrate.config.json` 后运行：
 
 ```bash
-npx spritecrate pack --config spritecrate.config.json
+npx @spritecrate/cli pack --config spritecrate.config.json
 ```
 
 预览产物而不写入文件，或获取 JSON 格式的执行结果：
 
 ```bash
-npx spritecrate pack --config spritecrate.config.json --dry-run
-npx spritecrate pack --config spritecrate.config.json --json
+npx @spritecrate/cli pack --config spritecrate.config.json --dry-run
+npx @spritecrate/cli pack --config spritecrate.config.json --json
 ```
 
 配置文件中的路径相对于配置文件所在目录；命令行中传入的路径相对于当前工作目录。更多选项见[配置文档](docs/configuration.md)。

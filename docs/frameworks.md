@@ -5,7 +5,7 @@ Phaser 4 is the primary target. Packing and PNG generation are engine-independen
 ## Phaser 4 and Phaser 3
 
 ```bash
-spritecrate pack "assets/**/*.png" --name characters --format phaser4 --out-dir dist/atlas
+npx @spritecrate/cli pack "assets/**/*.png" --name characters --format phaser4 --out-dir dist/atlas
 ```
 
 ```js
@@ -22,7 +22,7 @@ Validation: Chromium WebGL, single/multiple pages, trim offsets, extrusion, and 
 ## PixiJS
 
 ```bash
-spritecrate pack "assets/**/*.png" --name characters --format pixijs --out-dir dist/atlas
+npx @spritecrate/cli pack "assets/**/*.png" --name characters --format pixijs --out-dir dist/atlas
 ```
 
 ```js
@@ -49,7 +49,7 @@ Reference: [PixiJS textures](https://pixijs.com/8.x/guides/components/textures),
 ## Cocos Creator / Cocos2d-x
 
 ```bash
-spritecrate pack "assets/**/*.png" --name characters --format cocos2d --out-dir dist/atlas
+npx @spritecrate/cli pack "assets/**/*.png" --name characters --format cocos2d --out-dir dist/atlas
 ```
 
 Each PNG has a matching `.plist`, using Cocos2d-x plist format 3. Import each PNG/plist pair into Cocos Creator's Assets panel together. With multiple pages, import every pair; no aggregate atlas asset or Creator `.meta` UUIDs are generated. In Cocos2d-x, register every page with `SpriteFrameCache::addSpriteFramesWithFile`.
