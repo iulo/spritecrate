@@ -68,7 +68,7 @@ M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M
 - [Release 检查](https://github.com/iulo/spritecrate/actions/runs/44488018505) 通过，但 Lerna 明确报告没有未发布版本，因此没有执行新 scope 的实际发布；不能以该次成功状态代替 OIDC 实发验证。
 - 104 项测试、本机完整检查和 [Linux/macOS/Windows 跨平台 CI](https://github.com/iulo/spritecrate/actions/runs/44489861662) 通过。公开 npm 的独立项目安装、SDK 运行、TypeScript 声明和 CLI 打包检查通过。
 - 旧 scope 三个包的全部版本已按维护者决定撤销，组织保留；撤销后再次确认新三包可下载、安装并执行。迁移要求见 [迁移文档](migration.md)。
-- `npx @spritecrate/cli pack ...` 已在空目录、独立 npm 缓存、未安装本地 CLI 的条件下实际执行通过。GitHub 文档已修正；npm 页面随下一版本发布更新。
+- `npx @spritecrate/cli pack ...` 已在空目录、独立 npm 缓存、未安装本地 CLI 的条件下实际执行通过。GitHub 文档已修正；npm 页面随后已随 0.1.4 发布更新。
 - 游戏已通过公开包接入 0.1.3，并重新生成四组图集；64 项游戏测试、100 帧像素还原、浏览器回归和 YYRT 包结构/脚本/资源检查通过。游戏远端已包含该接入提交。未进行新布局的 YYRT 设备验证。
 
 ## 0.1.4 发布验证
@@ -77,4 +77,8 @@ M0 工具链/来源基线、M1 工程、M2 最小闭环已完成本机验证。M
 - 三个包包含修正后的 scoped CLI 文档。打包逻辑与 0.1.3 相同。
 - 本机 `pnpm check` 通过：107 项测试、构建、类型、Lint、格式、包内容和独立 tarball 消费均通过。Phaser 4/3 与 PixiJS 的浏览器像素对比通过；Phaser 旋转负向探针保持预期差异。
 - 前两次实际发布在 Sigstore 创建透明日志条目时出现 409，Rekor 中可查询到对应条目，registry 尚无 0.1.4。已对发布依赖增加冲突回读，并在生成 attestation 后完整验证 bundle；3 项回归覆盖带位置的 409、无位置的 409 和服务器错误。
-- 本版本将通过修复后的 GitHub Actions 实际发布；完成后记录 Release、公开安装和 provenance 核验结果。
+- [Release 44492613556](https://github.com/iulo/spritecrate/actions/runs/44492613556) 成功，日志确认 Lerna 实际发布三包 0.1.4。发布源提交为 `5ad63d36cc0a4fb81c0c2a8262439509e186b910`，对应标签 `v0.1.4`；三个包的 latest 均为 0.1.4。
+- 三包公开产物均核对 author 为 iulo、项目 MIT 版权署名和上游声明；npm CLI 页面及 tarball README 均包含 `npx @spritecrate/cli`。
+- 三包 provenance 均完成 Sigstore 密码学校验，限定 GitHub Actions issuer 及本仓库 `release.yml@refs/heads/main` 签名身份；同时核对 SLSA 源码提交、工作流和 subject SHA-512 与实际下载的 tarball 一致。三份证明均指向上述 Release 的 attempt 1。
+- Actions 和外部独立临时项目均通过公开 npm 安装、SDK 运行、TypeScript 声明和 CLI 打包验证；另在空目录、独立 npm 缓存中验证 `npx @spritecrate/cli@0.1.4 --version` 返回 0.1.4。
+- 发布源提交的 main 和版本标签跨平台 CI 均通过，包含 107 项测试和引擎验证。
