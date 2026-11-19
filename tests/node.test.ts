@@ -124,7 +124,7 @@ describe('output ownership and recovery', () => {
     expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('updated');
     expect(await readFile(path.join(dir, 'stale.png'), 'utf8')).toBe('user edit');
     expect(await readFile(path.join(dir, 'README.txt'), 'utf8')).toBe('unrelated');
-    expect(await readdir(dir)).toEqual([
+    expect((await readdir(dir)).sort()).toEqual([
       '.spritetuck-manifest.json',
       'README.txt',
       'a.png',
