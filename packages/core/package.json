@@ -1,7 +1,7 @@
 {
-  "name": "@spritetunk/core",
-  "version": "0.1.2",
-  "description": "SpriteTunk core: deterministic texture atlas tooling",
+  "name": "@spritetuck/core",
+  "version": "0.1.3",
+  "description": "SpriteTuck core: deterministic texture atlas tooling",
   "keywords": [
     "cocos-creator",
     "cocos2d",
@@ -9,18 +9,18 @@
     "phaser4",
     "pixijs",
     "spritesheet",
-    "spritetunk",
+    "spritetuck",
     "texture-atlas",
     "texture-packer"
   ],
-  "homepage": "https://github.com/iulo/spritetunk#readme",
+  "homepage": "https://github.com/iulo/spritetuck#readme",
   "bugs": {
-    "url": "https://github.com/iulo/spritetunk/issues"
+    "url": "https://github.com/iulo/spritetuck/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iulo/spritetunk.git",
+    "url": "git+https://github.com/iulo/spritetuck.git",
     "directory": "packages/core"
   },
   "files": [

@@ -1,4 +1,4 @@
-# SpriteTunk
+# SpriteTuck
 
 [English](README.md) | 简体中文
 
@@ -38,14 +38,14 @@
 安装 Node.js SDK：
 
 ```bash
-npm install @spritetunk/node
+npm install @spritetuck/node
 ```
 
 安装命令行工具：
 
 ```bash
-npm install --save-dev @spritetunk/cli
-npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npm install --save-dev @spritetuck/cli
+npx spritetuck pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 需要 Node.js 22.18.0 或更高版本，所有包均为 ESM。
@@ -57,7 +57,7 @@ npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 将指定目录中的 PNG 打包为 Phaser 4 图集：
 
 ```bash
-npx spritetunk pack "assets/**/*.png" \
+npx spritetuck pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -80,17 +80,17 @@ npx spritetunk pack "assets/**/*.png" \
 }
 ```
 
-保存为 `spritetunk.config.json` 后运行：
+保存为 `spritetuck.config.json` 后运行：
 
 ```bash
-npx spritetunk pack --config spritetunk.config.json
+npx spritetuck pack --config spritetuck.config.json
 ```
 
 预览产物而不写入文件，或获取 JSON 格式的执行结果：
 
 ```bash
-npx spritetunk pack --config spritetunk.config.json --dry-run
-npx spritetunk pack --config spritetunk.config.json --json
+npx spritetuck pack --config spritetuck.config.json --dry-run
+npx spritetuck pack --config spritetuck.config.json --json
 ```
 
 配置文件中的路径相对于配置文件所在目录；命令行中传入的路径相对于当前工作目录。更多选项见[配置文档](docs/configuration.md)。
@@ -98,7 +98,7 @@ npx spritetunk pack --config spritetunk.config.json --json
 ### Node.js SDK
 
 ```ts
-import { pack, writeOutput } from '@spritetunk/node';
+import { pack, writeOutput } from '@spritetuck/node';
 
 const result = await pack({
   inputs: ['assets/**/*.png'],
@@ -156,11 +156,11 @@ SDK 或 JSON 配置中设置 `atlas.packMode: 'fast'`，可使用 0.1.2 的单�
 
 | 包                 | 用途                                        |
 | ------------------ | ------------------------------------------- |
-| `@spritetunk/core` | RGBA 像素处理、图集排布、合成和描述文件导出 |
-| `@spritetunk/node` | Node.js SDK，提供图片编解码与文件读写       |
-| `@spritetunk/cli`  | 命令行工具，命令名为 `spritetunk`           |
+| `@spritetuck/core` | RGBA 像素处理、图集排布、合成和描述文件导出 |
+| `@spritetuck/node` | Node.js SDK，提供图片编解码与文件读写       |
+| `@spritetuck/cli`  | 命令行工具，命令名为 `spritetuck`           |
 
-需要直接操作 RGBA 数据时，可单独安装 `@spritetunk/core`。
+需要直接操作 RGBA 数据时，可单独安装 `@spritetuck/core`。
 
 Phaser 4 是主要目标，保留 `phaser3` 导出选项用于兼容。
 
@@ -174,6 +174,7 @@ Phaser 4 是主要目标，保留 `phaser3` 导出选项用于兼容。
 
 ## 文档
 
+- [从 SpriteTunk 迁移](docs/migration.md)
 - [配置与输出格式](docs/configuration.md)
 - [框架支持与加载方式](docs/frameworks.md)
 - [架构设计](docs/architecture.md)
@@ -203,6 +204,6 @@ pnpm example
 
 ## 许可证
 
-[MIT](LICENSE) © 2026 SpriteTunk contributors。
+[MIT](LICENSE) © 2026 SpriteTuck contributors。
 
-欢迎在使用工具的产品文档中注明 SpriteTunk；这是自愿请求，不构成额外许可条件。
+欢迎在使用工具的产品文档中注明 SpriteTuck；这是自愿请求，不构成额外许可条件。

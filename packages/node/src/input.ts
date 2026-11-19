@@ -2,8 +2,8 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import fg from 'fast-glob';
 import sharp from 'sharp';
-import { AtlasError, MAX_IMAGE_PIXELS, MAX_TOTAL_PIXELS } from '@spritetunk/core';
-import type { Sprite } from '@spritetunk/core';
+import { AtlasError, MAX_IMAGE_PIXELS, MAX_TOTAL_PIXELS } from '@spritetuck/core';
+import type { Sprite } from '@spritetuck/core';
 
 export interface ImageInput {
   id: string;

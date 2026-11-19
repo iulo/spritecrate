@@ -22,8 +22,8 @@
 
 ## CI
 
-- GitHub Actions 的 Linux/macOS/Windows × Node 22.22.2/24.15.0/26 已全部通过，另有 Phaser 浏览器验证。见 [CI](https://github.com/iulo/spritetunk/actions/runs/44269183130)。
-- 三包 0.1.1 已通过 GitHub OIDC 发布，公共安装也已通过；见 [Release](https://github.com/iulo/spritetunk/actions/runs/44271944279)。
+- GitHub Actions 的 Linux/macOS/Windows × Node 22.22.2/24.15.0/26 已全部通过，另有 Phaser 浏览器验证。见 [CI](https://github.com/iulo/spritetuck/actions/runs/44269183130)。
+- 三包 0.1.1 已通过 GitHub OIDC 发布，公共安装也已通过；见 [Release](https://github.com/iulo/spritetuck/actions/runs/44271944279)。
 
 首次 Windows 检查因 CRLF 失败，已通过 .gitattributes 修复；第二轮全部通过。
 

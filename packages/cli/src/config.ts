@@ -2,8 +2,8 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Ajv } from 'ajv';
-import { AtlasError } from '@spritetunk/node';
-import type { AtlasOptions, ExportFormat } from '@spritetunk/node';
+import { AtlasError } from '@spritetuck/node';
+import type { AtlasOptions, ExportFormat } from '@spritetuck/node';
 
 export interface Config {
   inputs: string[];

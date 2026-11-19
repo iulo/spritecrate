@@ -2,8 +2,8 @@
 
 ## 项目与权限
 
-- GitHub 仓库：https://github.com/iulo/spritetunk
-- npm scope：@spritetunk；三个包统一版本。
+- GitHub 仓库：https://github.com/iulo/spritetuck
+- npm scope：@spritetuck；三个包统一版本。
 - 发布入口：GitHub Actions → Release → Run workflow，选择 main。
 - 发布环境：npm，仅 main 分支可部署；不保存长期 npm 发布 token。
 
@@ -26,15 +26,15 @@ npm 的可信发布设置要求包已经存在。首次引导由具备组织权�
 随后为每个包绑定相同的可信发布配置，例如：
 
 ```bash
-npm trust github @spritetunk/core \
-  --repository iulo/spritetunk \
+npm trust github @spritetuck/core \
+  --repository iulo/spritetuck \
   --file release.yml \
   --environment npm \
   --allow-publish \
   --yes
 ```
 
-对 @spritetunk/node 和 @spritetunk/cli 重复执行，并用 npm trust list 核实。不要增加不相关仓库、workflow 或长期凭据的权限。
+对 @spritetuck/node 和 @spritetuck/cli 重复执行，并用 npm trust list 核实。不要增加不相关仓库、workflow 或长期凭据的权限。
 
 环境策略的可审阅定义保存在 scripts/github-npm-environment.json 和 scripts/github-npm-branch-policy.json；文件不会自行修改 GitHub 设置。
 

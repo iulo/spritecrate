@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import { performance } from 'node:perf_hooks';
-import { pack as packPixels, exportAtlas, resolveOptions, AtlasError } from '@spritetunk/core';
-import type { AtlasOptions, ExportFormat, Exporter, OutputFile, Report } from '@spritetunk/core';
+import { pack as packPixels, exportAtlas, resolveOptions, AtlasError } from '@spritetuck/core';
+import type { AtlasOptions, ExportFormat, Exporter, OutputFile, Report } from '@spritetuck/core';
 import { loadInputs } from './input.js';
 import type { ImageInput } from './input.js';
 

@@ -1,2 +1,2 @@
-declare const __SPRITETUNK_VERSION__: string;
-export const VERSION: string = __SPRITETUNK_VERSION__;
+declare const __SPRITETUCK_VERSION__: string;
+export const VERSION: string = __SPRITETUCK_VERSION__;

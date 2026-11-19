@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { pack, resolveOptions } from '@spritetunk/core';
-import type { AtlasOptions, Sprite } from '@spritetunk/core';
+import { pack, resolveOptions } from '@spritetuck/core';
+import type { AtlasOptions, Sprite } from '@spritetuck/core';
 import { MaxRects, HEURISTICS } from '../packages/core/src/maxrects.js';
 import rectangles from './fixtures/animation-rectangles.json';
 import { restore, sprite } from './helpers.js';

@@ -1,6 +1,6 @@
 # 架构与接口设计
 
-状态：首期已实现；运行验证和已知限制见 [验证记录](validation.md)。项目名按现有目录使用 SpriteTunk，不自动更正为其他拼写。
+状态：首期已实现；运行验证和已知限制见 [验证记录](validation.md)。项目名按现有目录使用 SpriteTuck，不自动更正为其他拼写。
 
 ## 目标与范围
 
@@ -69,7 +69,7 @@ Node 图片编解码优先验证 Sharp；只放在 node 包。验证跨平台安
 Node SDK 的主要接口：
 
 ```ts
-import { pack, writeOutput } from '@spritetunk/node';
+import { pack, writeOutput } from '@spritetuck/node';
 
 const result = await pack({
   inputs: ['assets/**/*.png'],

@@ -1,6 +1,6 @@
 import { performance } from 'node:perf_hooks';
 import os from 'node:os';
-import { pack, VERSION } from '@spritetunk/core';
+import { pack, VERSION } from '@spritetuck/core';
 
 const cases = [];
 for (const count of [10, 100, 500]) {

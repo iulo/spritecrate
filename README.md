@@ -1,4 +1,4 @@
-# SpriteTunk
+# SpriteTuck
 
 English | [简体中文](README_CN.md)
 
@@ -38,14 +38,14 @@ See [framework integration](docs/frameworks.md) for loading examples and validat
 Install the Node.js SDK:
 
 ```bash
-npm install @spritetunk/node
+npm install @spritetuck/node
 ```
 
 Or install the CLI:
 
 ```bash
-npm install --save-dev @spritetunk/cli
-npx spritetunk pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
+npm install --save-dev @spritetuck/cli
+npx spritetuck pack "assets/**/*.png" --out-dir dist/atlas --format phaser4
 ```
 
 Requires Node.js 22.18.0 or later. All packages are ESM.
@@ -57,7 +57,7 @@ Requires Node.js 22.18.0 or later. All packages are ESM.
 Pack PNG files into a Phaser 4 atlas:
 
 ```bash
-npx spritetunk pack "assets/**/*.png" \
+npx spritetuck pack "assets/**/*.png" \
   --out-dir dist/atlas \
   --name characters \
   --format phaser4
@@ -80,17 +80,17 @@ You can also use a JSON configuration file:
 }
 ```
 
-Save it as `spritetunk.config.json` and run:
+Save it as `spritetuck.config.json` and run:
 
 ```bash
-npx spritetunk pack --config spritetunk.config.json
+npx spritetuck pack --config spritetuck.config.json
 ```
 
 Preview the output without writing files, or return a JSON report:
 
 ```bash
-npx spritetunk pack --config spritetunk.config.json --dry-run
-npx spritetunk pack --config spritetunk.config.json --json
+npx spritetuck pack --config spritetuck.config.json --dry-run
+npx spritetuck pack --config spritetuck.config.json --json
 ```
 
 Paths in a configuration file are relative to that file. Paths passed on the command line are relative to the current working directory. See the [configuration reference](docs/configuration.md) for all options.
@@ -98,7 +98,7 @@ Paths in a configuration file are relative to that file. Paths passed on the com
 ### Node.js SDK
 
 ```ts
-import { pack, writeOutput } from '@spritetunk/node';
+import { pack, writeOutput } from '@spritetuck/node';
 
 const result = await pack({
   inputs: ['assets/**/*.png'],
@@ -156,11 +156,11 @@ Set `atlas.packMode: 'fast'` in SDK options or JSON configuration to use the sin
 
 | Package            | Purpose                                                          |
 | ------------------ | ---------------------------------------------------------------- |
-| `@spritetunk/core` | RGBA processing, atlas packing, compositing, and metadata export |
-| `@spritetunk/node` | Node.js SDK with image codecs and file I/O                       |
-| `@spritetunk/cli`  | Command-line tool, available as `spritetunk`                     |
+| `@spritetuck/core` | RGBA processing, atlas packing, compositing, and metadata export |
+| `@spritetuck/node` | Node.js SDK with image codecs and file I/O                       |
+| `@spritetuck/cli`  | Command-line tool, available as `spritetuck`                     |
 
-Use `@spritetunk/core` on its own when you need to work directly with RGBA data.
+Use `@spritetuck/core` on its own when you need to work directly with RGBA data.
 
 Phaser 4 is the primary target. The `phaser3` export remains available for compatibility.
 
@@ -174,6 +174,7 @@ Output files are tracked in a manifest. Unrelated files and manually edited file
 
 ## Documentation
 
+- [Migrating from SpriteTunk](docs/migration.md)
 - [Configuration and export formats](docs/configuration.md)
 - [Supported frameworks and loading](docs/frameworks.md)
 - [Architecture](docs/architecture.md)
@@ -203,6 +204,6 @@ Adapted portions retain Copyright (c) 2018 Alexander Norinchak and the MIT licen
 
 ## License
 
-[MIT](LICENSE) © 2026 SpriteTunk contributors.
+[MIT](LICENSE) © 2026 SpriteTuck contributors.
 
 Attribution in your product documentation is appreciated, but is not an additional license requirement.

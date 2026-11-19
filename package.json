@@ -1,14 +1,14 @@
 {
-  "name": "spritetunk-workspace",
-  "version": "0.1.2",
+  "name": "spritetuck-workspace",
+  "version": "0.1.3",
   "private": true,
-  "homepage": "https://github.com/iulo/spritetunk#readme",
+  "homepage": "https://github.com/iulo/spritetuck#readme",
   "bugs": {
-    "url": "https://github.com/iulo/spritetunk/issues"
+    "url": "https://github.com/iulo/spritetuck/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iulo/spritetunk.git"
+    "url": "git+https://github.com/iulo/spritetuck.git"
   },
   "type": "module",
   "scripts": {
@@ -34,8 +34,8 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
     "@playwright/test": "1.65.1",
-    "@spritetunk/core": "workspace:*",
-    "@spritetunk/node": "workspace:*",
+    "@spritetuck/core": "workspace:*",
+    "@spritetuck/node": "workspace:*",
     "@types/node": "26.6.6",
     "@types/plist": "3.0.5",
     "lerna": "10.1.1",

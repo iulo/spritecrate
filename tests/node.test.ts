@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdtemp, readFile, writeFile, readdir, rm, symlink } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile, readdir, rm, symlink, rename } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { pack, writeOutput } from '@spritetunk/node';
+import { pack, writeOutput } from '@spritetuck/node';
 import { png, sprite } from './helpers.js';
 
 const directories: string[] = [];
 async function directory(): Promise<string> {
-  const dir = await mkdtemp(path.join(tmpdir(), 'spritetunk-test-'));
+  const dir = await mkdtemp(path.join(tmpdir(), 'spritetuck-test-'));
   directories.push(dir);
   return dir;
 }
@@ -108,7 +108,54 @@ describe('output ownership and recovery', () => {
       writeOutput([file('a.png', 'new'), file('b.png', 'new')], { directory: dir }),
     ).rejects.toMatchObject({ code: 'OUTPUT_IO' });
     expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('a');
-    expect(await readdir(dir)).not.toContain('.spritetunk.lock');
+    expect(await readdir(dir)).not.toContain('.spritetuck.lock');
+  });
+
+  it('migrates legacy ownership while preserving unrelated and edited stale files', async () => {
+    const dir = await directory();
+    await writeOutput([file('a.png', 'a'), file('stale.png', 'old')], { directory: dir });
+    await rename(
+      path.join(dir, '.spritetuck-manifest.json'),
+      path.join(dir, '.spritetunk-manifest.json'),
+    );
+    await writeFile(path.join(dir, 'stale.png'), 'user edit');
+    await writeFile(path.join(dir, 'README.txt'), 'unrelated');
+    await writeOutput([file('a.png', 'updated')], { directory: dir });
+    expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('updated');
+    expect(await readFile(path.join(dir, 'stale.png'), 'utf8')).toBe('user edit');
+    expect(await readFile(path.join(dir, 'README.txt'), 'utf8')).toBe('unrelated');
+    expect(await readdir(dir)).toEqual([
+      '.spritetuck-manifest.json',
+      'README.txt',
+      'a.png',
+      'stale.png',
+    ]);
+  });
+
+  it('refuses edited legacy outputs without migrating their ownership', async () => {
+    const dir = await directory();
+    await writeOutput([file('a.png', 'a')], { directory: dir });
+    await rename(
+      path.join(dir, '.spritetuck-manifest.json'),
+      path.join(dir, '.spritetunk-manifest.json'),
+    );
+    await writeFile(path.join(dir, 'a.png'), 'edit');
+    await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
+      code: 'OUTPUT_IO',
+    });
+    expect(await readFile(path.join(dir, 'a.png'), 'utf8')).toBe('edit');
+    expect(await readdir(dir)).toContain('.spritetunk-manifest.json');
+    expect(await readdir(dir)).not.toContain('.spritetuck-manifest.json');
+  });
+
+  it('respects legacy writer locks without deleting another writer lock', async () => {
+    const dir = await directory();
+    await writeFile(path.join(dir, '.spritetunk.lock'), 'active');
+    await expect(writeOutput([file('a.png', 'new')], { directory: dir })).rejects.toMatchObject({
+      code: 'OUTPUT_IO',
+    });
+    expect(await readFile(path.join(dir, '.spritetunk.lock'), 'utf8')).toBe('active');
+    expect(await readdir(dir)).not.toContain('.spritetuck.lock');
   });
 
   it.each([
@@ -116,6 +163,8 @@ describe('output ownership and recovery', () => {
     '/absolute.png',
     'sub/file.png',
     'sub\\file.png',
+    '.spritetuck.lock',
+    '.spritetuck-manifest.json',
     '.spritetunk.lock',
     '.spritetunk-manifest.json',
   ])('rejects unsafe name %s', async (name) => {
@@ -133,7 +182,7 @@ describe('output ownership and recovery', () => {
       code: 'OUTPUT_IO',
     });
     expect(await readFile(outside, 'utf8')).toBe('untouched');
-    await writeFile(path.join(dir, '.spritetunk.lock'), '');
+    await writeFile(path.join(dir, '.spritetuck.lock'), '');
     await expect(writeOutput([file('b.png', 'x')], { directory: dir })).rejects.toMatchObject({
       code: 'OUTPUT_IO',
     });

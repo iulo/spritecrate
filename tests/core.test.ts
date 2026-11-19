@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { pack, exportAtlas, resolveOptions } from '@spritetunk/core';
-import type { AtlasOptions, Sprite } from '@spritetunk/core';
+import { pack, exportAtlas, resolveOptions } from '@spritetuck/core';
+import type { AtlasOptions, Sprite } from '@spritetuck/core';
 import { restore, sprite } from './helpers.js';
 
 describe('pixel pipeline', () => {
@@ -220,7 +220,7 @@ describe('validation and export', () => {
       expect(files).toHaveLength(1);
       const text = new TextDecoder().decode(files[0]!.data);
       const data = JSON.parse(text);
-      expect(text).toContain('SpriteTunk');
+      expect(text).toContain('SpriteTuck');
       expect(
         format.startsWith('phaser')
           ? data.textures[0].frames.length

@@ -43,7 +43,7 @@ export function exportAtlas(
           scale: 1,
           frames: page.frames.map((frame) => ({ filename: frame.id, ...frameData(frame) })),
         })),
-        meta: { app: 'SpriteTunk', version: VERSION },
+        meta: { app: 'SpriteTuck', version: VERSION },
       }),
     ];
   }
@@ -54,7 +54,7 @@ export function exportAtlas(
           ? Object.fromEntries(page.frames.map((frame) => [frame.id, frameData(frame)]))
           : page.frames.map((frame) => ({ filename: frame.id, ...frameData(frame) })),
       meta: {
-        app: 'SpriteTunk',
+        app: 'SpriteTuck',
         version: VERSION,
         image: page.image,
         format: 'RGBA8888',
